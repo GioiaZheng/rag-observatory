@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "run_id": "toy-retrieval-miss",
+    "timestamp": "2026-06-22T00:00:00Z",
+    "dataset": "toy_rag_observatory",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "reranking": false,
+      "context_selection": true,
+      "generation": true,
+      "citations": false,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "q-penicillin",
+    "text": "Who discovered penicillin?",
+    "gold_answer": "Alexander Fleming discovered penicillin."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-insulin",
+      "title": "Insulin discovery",
+      "text": "Frederick Banting and Charles Best contributed to the discovery of insulin.",
+      "score": 0.77,
+      "rank": 1,
+      "is_relevant": false
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-insulin",
+      "doc_id": "doc-insulin",
+      "text": "Frederick Banting and Charles Best contributed to the discovery of insulin.",
+      "rank": 1,
+      "token_count": 10
+    }
+  ],
+  "answer": {
+    "text": "Frederick Banting discovered penicillin.",
+    "citations": []
+  },
+  "metrics": [
+    {
+      "name": "context_recall",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8
+    },
+    {
+      "name": "answer_correctness",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "retrieval",
+      "note": "The only retrieved document is about insulin rather than penicillin."
+    }
+  ]
+}

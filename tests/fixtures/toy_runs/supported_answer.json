@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "run_id": "toy-supported-answer",
+    "timestamp": "2026-06-22T00:00:00Z",
+    "dataset": "toy_rag_observatory",
+    "config_hash": "toy-config",
+    "code_version": "fixture",
+    "retriever": "toy-bm25",
+    "reranker": null,
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "random_seed": 7,
+    "pipeline_stages": {
+      "retrieval": true,
+      "reranking": false,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "q-supported",
+    "text": "What is RAG observability used for?",
+    "gold_answer": "It is used to trace, inspect, and diagnose RAG behavior."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-observability",
+      "title": "RAG observability",
+      "text": "RAG observability records retrieval, context selection, answers, citations, and evaluation signals so a run can be diagnosed.",
+      "score": 0.98,
+      "rank": 1,
+      "is_relevant": true
+    },
+    {
+      "doc_id": "doc-dashboard",
+      "title": "Dashboard note",
+      "text": "A dashboard may be useful after core trace and reporting workflows are stable.",
+      "score": 0.21,
+      "rank": 2,
+      "is_relevant": false
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-observability",
+      "doc_id": "doc-observability",
+      "text": "RAG observability records retrieval, context selection, answers, citations, and evaluation signals so a run can be diagnosed.",
+      "rank": 1,
+      "token_count": 18
+    }
+  ],
+  "prompt": {
+    "template_id": "toy-qa-v1",
+    "variables": {
+      "instruction": "Answer using the provided context."
+    }
+  },
+  "answer": {
+    "text": "RAG observability is used to trace and diagnose RAG behavior across retrieval, context, answer, citation, and evaluation stages.",
+    "citations": [
+      {
+        "doc_id": "doc-observability",
+        "quote": "records retrieval, context selection, answers, citations, and evaluation signals"
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "faithfulness",
+      "value": 1.0,
+      "passed": true,
+      "threshold": 0.8
+    },
+    {
+      "name": "answer_relevance",
+      "value": 0.95,
+      "passed": true,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "summary",
+      "note": "Toy success case with relevant evidence selected and cited."
+    }
+  ]
+}
