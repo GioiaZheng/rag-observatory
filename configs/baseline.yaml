@@ -1,0 +1,6 @@
+schema_version: "0.1"
+report:
+  format: markdown
+classification:
+  enable_heuristics: true
+  preserve_manual_labels: true

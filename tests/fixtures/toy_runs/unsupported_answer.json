@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "run_id": "toy-unsupported-answer",
+    "timestamp": "2026-06-22T00:00:00Z",
+    "dataset": "toy_rag_observatory",
+    "retriever": "toy-bm25",
+    "reranker": null,
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "reranking": false,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "q-scurvy",
+    "text": "Which vitamin prevents scurvy?",
+    "gold_answer": "Vitamin C prevents scurvy."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-scurvy",
+      "title": "Scurvy",
+      "text": "Scurvy is caused by vitamin C deficiency. Vitamin C prevents scurvy.",
+      "score": 0.99,
+      "rank": 1,
+      "is_relevant": true
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-scurvy",
+      "doc_id": "doc-scurvy",
+      "text": "Scurvy is caused by vitamin C deficiency. Vitamin C prevents scurvy.",
+      "rank": 1,
+      "token_count": 12
+    }
+  ],
+  "prompt": {
+    "template_id": "toy-qa-v1"
+  },
+  "answer": {
+    "text": "Vitamin D prevents scurvy.",
+    "citations": [
+      {
+        "doc_id": "doc-scurvy",
+        "quote": "Vitamin C prevents scurvy."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "faithfulness",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8,
+      "notes": "The answer changes vitamin C to vitamin D."
+    },
+    {
+      "name": "answer_correctness",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [
+    {
+      "mode": "contradicted_by_context",
+      "detection_method": "manual",
+      "severity": "high",
+      "evidence": "Context states vitamin C, answer states vitamin D.",
+      "rationale": "The answer contradicts the selected context."
+    }
+  ],
+  "diagnostic_notes": [
+    {
+      "stage": "generation",
+      "note": "Retrieval and context selection succeeded, but generation changed the key entity."
+    }
+  ]
+}
