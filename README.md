@@ -44,6 +44,11 @@ After installation, the same command is available as:
 rag-observe report tests/fixtures/toy_runs/unsupported_answer.json --output outputs/reports/unsupported_answer.md
 ```
 
+A public-safe synthetic example of the rendered report shape is checked in at
+[`docs/examples/synthetic_diagnostic_report.md`](docs/examples/synthetic_diagnostic_report.md).
+Generated run outputs should still be written outside the committed tree, such
+as under an ignored `outputs/` directory.
+
 ## Project Boundaries
 
 This repository focuses on:
