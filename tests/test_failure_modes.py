@@ -9,6 +9,7 @@ from rag_observatory.taxonomy.failure_modes import FAILURE_MODE_VALUES, classify
 from rag_observatory.trace.schema import RagTrace
 
 
+ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "toy_runs"
 
 
@@ -50,6 +51,13 @@ class FailureModeTests(unittest.TestCase):
 
         self.assertIn("contradicted_by_context", modes)
         self.assertIn("unsupported_answer", modes)
+
+    def test_failure_taxonomy_docs_cover_all_modes(self) -> None:
+        docs = (ROOT / "docs" / "failure_taxonomy.md").read_text(encoding="utf-8")
+
+        for mode in FAILURE_MODE_VALUES:
+            with self.subTest(mode=mode):
+                self.assertIn(f"`{mode}`", docs)
 
 
 if __name__ == "__main__":
