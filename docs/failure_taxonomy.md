@@ -9,7 +9,7 @@ diagnostic reports.
 | --- | --- |
 | `manual` | Assigned by a human reviewer from trace inspection. |
 | `heuristic` | Assigned by deterministic rules over fields already present in the trace. |
-| `model_based` | Reserved for future model-assisted checks with explicit inputs and outputs. |
+| `model_based` | Reserved for future model-assisted checks that follow the [model-based judge contract](model_based_judge_contract.md). |
 | `future` | Reserved for planned detection methods that are not implemented yet. |
 
 Heuristic labels are intentionally conservative. They should point to likely
