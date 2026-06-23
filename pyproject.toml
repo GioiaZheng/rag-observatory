@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "Trace-based observability and error analysis for Retrieval-Augmented Generation runs."
 readme = "README.md"
 requires-python = ">=3.10"
-authors = [{ name = "GioiaZheng" }]
+authors = [{ name = "Gioia Zheng", email = "gioia.zheng.stud@gmail.com" }]
+license = { file = "LICENSE" }
+keywords = ["rag", "observability", "evaluation", "failure-analysis"]
 dependencies = []
 
 [project.scripts]

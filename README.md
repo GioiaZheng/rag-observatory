@@ -1,5 +1,8 @@
 # rag-observatory
 
+[![tests](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml/badge.svg)](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
+
 `rag-observatory` is a local-first research-engineering toolkit for observing
 and diagnosing Retrieval-Augmented Generation runs.
 
@@ -103,3 +106,7 @@ configs/          Configuration templates
 
 The project is in its initial schema and reporting milestone. Interfaces should
 be treated as early but intentionally small.
+
+## License
+
+MIT License. See [LICENSE](LICENSE).
