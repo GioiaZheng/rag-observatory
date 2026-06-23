@@ -429,10 +429,11 @@ class FailureLabel:
             {"mode", "detection_method", "severity", "evidence", "rationale", "extra"},
             "failure_label",
         )
+        severity = _optional_str(data, "severity", "failure_label") or "medium"
         return cls(
             mode=_required_str(data, "mode", "failure_label"),
             detection_method=_required_str(data, "detection_method", "failure_label"),
-            severity=data.get("severity", "medium"),
+            severity=severity,
             evidence=_optional_str(data, "evidence", "failure_label"),
             rationale=_optional_str(data, "rationale", "failure_label"),
             extra=_optional_object(data, "extra", "failure_label"),
