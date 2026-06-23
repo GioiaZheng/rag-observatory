@@ -1,0 +1,59 @@
+{
+  "cases": [
+    {
+      "case_id": "clean_supported_answer",
+      "trace_path": "traces/clean_supported_answer.json",
+      "expected_modes": []
+    },
+    {
+      "case_id": "retrieval_miss",
+      "trace_path": "../toy_runs/retrieval_miss.json",
+      "expected_modes": [
+        "retrieval_miss",
+        "retrieval_noise",
+        "context_pollution"
+      ]
+    },
+    {
+      "case_id": "unsupported_answer",
+      "trace_path": "../toy_runs/unsupported_answer.json",
+      "expected_modes": [
+        "contradicted_by_context",
+        "unsupported_answer"
+      ]
+    },
+    {
+      "case_id": "comparison_before",
+      "trace_path": "../toy_runs/comparison_before.json",
+      "expected_modes": [
+        "contradicted_by_context",
+        "retrieval_noise",
+        "context_truncation",
+        "context_pollution",
+        "unsupported_answer",
+        "wrong_citation"
+      ]
+    },
+    {
+      "case_id": "missing_citation",
+      "trace_path": "traces/missing_citation.json",
+      "expected_modes": [
+        "missing_citation"
+      ]
+    },
+    {
+      "case_id": "metric_disagreement",
+      "trace_path": "traces/metric_disagreement.json",
+      "expected_modes": [
+        "metric_disagreement"
+      ]
+    },
+    {
+      "case_id": "reranking_error",
+      "trace_path": "traces/reranking_error.json",
+      "expected_modes": [
+        "reranking_error"
+      ]
+    }
+  ]
+}

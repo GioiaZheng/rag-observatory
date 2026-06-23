@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "run_id": "reviewed-clean-supported-answer",
+    "timestamp": "2026-06-23T00:00:00Z",
+    "dataset": "reviewed_synthetic",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "q-clean-supported",
+    "text": "What city is the capital of France?",
+    "gold_answer": "Paris is the capital of France."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-paris",
+      "title": "Paris",
+      "text": "Paris is the capital of France.",
+      "score": 0.95,
+      "rank": 1,
+      "is_relevant": true
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-paris",
+      "doc_id": "doc-paris",
+      "text": "Paris is the capital of France.",
+      "rank": 1,
+      "token_count": 6
+    }
+  ],
+  "answer": {
+    "text": "Paris is the capital of France.",
+    "citations": [
+      {
+        "doc_id": "doc-paris",
+        "quote": "Paris is the capital of France."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "answer_correctness",
+      "value": 1.0,
+      "passed": true,
+      "threshold": 0.8
+    }
+  ],
+  "failures": []
+}
