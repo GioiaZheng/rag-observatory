@@ -85,6 +85,10 @@ It does not aim to provide:
 Pipeline code should appear only as a fixture, a minimal demo, or an adapter
 for observing external systems.
 
+Adapter planning should stay explicit and narrow. The current `msmarco-genqa`
+boundary note is in
+[`docs/msmarco_genqa_adapter_plan.md`](docs/msmarco_genqa_adapter_plan.md).
+
 ## Repository Layout
 
 ```text
