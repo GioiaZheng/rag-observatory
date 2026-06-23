@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "run_id": "toy-comparison-before",
+    "timestamp": "2026-06-22T00:00:00Z",
+    "dataset": "toy_rag_observatory",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "q-france-capital",
+    "text": "What is the capital of France?",
+    "gold_answer": "Paris is the capital of France."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-lyon",
+      "title": "Lyon",
+      "text": "Lyon is a major city in France. Paris is the capital of France.",
+      "score": 0.91,
+      "rank": 1,
+      "is_relevant": false
+    },
+    {
+      "doc_id": "doc-paris",
+      "title": "Paris",
+      "text": "Paris is the capital and most populous city of France.",
+      "score": 0.82,
+      "rank": 2,
+      "is_relevant": true
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-lyon",
+      "doc_id": "doc-lyon",
+      "text": "Lyon is a major city in France. Paris is the capital of France.",
+      "rank": 1,
+      "token_count": 12
+    }
+  ],
+  "answer": {
+    "text": "Lyon is the capital of France.",
+    "citations": [
+      {
+        "doc_id": "doc-lyon",
+        "quote": "Lyon is a major city in France."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "faithfulness",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8,
+      "notes": "The answer contradicts the selected context."
+    },
+    {
+      "name": "answer_correctness",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [
+    {
+      "mode": "contradicted_by_context",
+      "detection_method": "manual",
+      "severity": "high",
+      "evidence": "Selected context states Paris is the capital, but the answer says Lyon.",
+      "rationale": "The generated answer changes the key entity."
+    }
+  ]
+}

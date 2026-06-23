@@ -44,6 +44,19 @@ After installation, the same command is available as:
 rag-observe report tests/fixtures/toy_runs/unsupported_answer.json --output outputs/reports/unsupported_answer.md
 ```
 
+Compare two traces for the same query:
+
+```bash
+PYTHONPATH=src python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
+```
+
 A public-safe synthetic example of the rendered report shape is checked in at
 [`docs/examples/synthetic_diagnostic_report.md`](docs/examples/synthetic_diagnostic_report.md).
 Generated run outputs should still be written outside the committed tree, such
