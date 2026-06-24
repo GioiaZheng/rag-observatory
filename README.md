@@ -102,6 +102,10 @@ Adapter planning should stay explicit and narrow. The current `msmarco-genqa`
 boundary note is in
 [`docs/msmarco_genqa_adapter_plan.md`](docs/msmarco_genqa_adapter_plan.md).
 
+Modeling investigations should stay optional and evidence-gated. The current
+lightweight classifier note is in
+[`docs/lightweight_failure_classifier_plan.md`](docs/lightweight_failure_classifier_plan.md).
+
 ## Repository Layout
 
 ```text
