@@ -60,6 +60,19 @@ $env:PYTHONPATH = "src"
 python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
 ```
 
+Evaluate failure labels against reviewed expected labels:
+
+```bash
+PYTHONPATH=src python -m rag_observatory.cli.main evaluate-labels tests/fixtures/reviewed_labels/expected_failure_labels.json --output outputs/reports/failure_label_evaluation.md
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m rag_observatory.cli.main evaluate-labels tests/fixtures/reviewed_labels/expected_failure_labels.json --output outputs/reports/failure_label_evaluation.md
+```
+
 A public-safe synthetic example of the rendered report shape is checked in at
 [`docs/examples/synthetic_diagnostic_report.md`](docs/examples/synthetic_diagnostic_report.md).
 Generated run outputs should still be written outside the committed tree, such
