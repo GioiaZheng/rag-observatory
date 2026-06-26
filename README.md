@@ -3,8 +3,9 @@
 [![tests](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml/badge.svg)](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
-`rag-observatory` is a local-first research-engineering toolkit for observing
-and diagnosing Retrieval-Augmented Generation runs.
+`rag-observatory` is a research-engineering toolkit for understanding and
+diagnosing Retrieval-Augmented Generation systems through traceability, failure
+taxonomy, evidence analysis, and reproducible reports.
 
 The project is not a RAG pipeline. Its central object is a RAG execution trace:
 query, retrieval candidates, selected context, generated answer, evidence,
