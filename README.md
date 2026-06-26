@@ -121,6 +121,7 @@ tests/
 
 docs/             Design notes and public technical documentation
 configs/          Configuration templates
+failure_taxonomy/ Paper-oriented taxonomy seeds
 ```
 
 ## Status
