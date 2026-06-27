@@ -12,7 +12,6 @@ from rag_observatory.taxonomy.failure_modes import (
     classify_trace,
 )
 
-
 FAILURE_MODE_ORDER = tuple(FAILURE_MODE_DEFINITIONS)
 
 
@@ -189,7 +188,7 @@ def evaluate_failure_labels(
 
 
 def _compute_mode_metrics(cases: Sequence[CaseEvaluation]) -> tuple[ModeMetrics, ...]:
-    observed_modes = set()
+    observed_modes: set[str] = set()
     for case in cases:
         observed_modes.update(case.expected_modes)
         observed_modes.update(case.predicted_modes)
@@ -224,7 +223,7 @@ def _normalize_modes(values: Iterable[str], label: str) -> tuple[str, ...]:
     if isinstance(values, str):
         raise ValueError(f"{label} must be a list of failure modes")
 
-    modes = set()
+    modes: set[str] = set()
     for value in values:
         if not isinstance(value, str) or not value:
             raise ValueError(f"{label} must contain non-empty strings")
@@ -239,7 +238,7 @@ def _sort_modes(values: Iterable[str]) -> tuple[str, ...]:
     return tuple(sorted(values, key=lambda mode: (order.get(mode, len(order)), mode)))
 
 
-def _required_str(data: dict, key: str, label: str) -> str:
+def _required_str(data: dict[str, object], key: str, label: str) -> str:
     value = data.get(key)
     if not isinstance(value, str) or not value:
         raise ValueError(f"{label}.{key} must be a non-empty string")

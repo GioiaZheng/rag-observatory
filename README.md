@@ -29,6 +29,16 @@ Run the tests:
 python -m unittest discover -s tests
 ```
 
+Install the development tools and run the repository quality gates:
+
+```bash
+python -m pip install -e ".[dev]"
+ruff check .
+ruff format --check .
+mypy src
+pre-commit run --all-files
+```
+
 Render a diagnostic report from a toy trace:
 
 ```bash

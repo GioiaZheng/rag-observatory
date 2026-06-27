@@ -104,7 +104,9 @@ def _context_section(trace: RagTrace) -> list[str]:
     ):
         rank = chunk.rank if chunk.rank is not None else "unranked"
         token_text = f", {chunk.token_count} tokens" if chunk.token_count is not None else ""
-        lines.append(f"- **{_clean(chunk.context_id)}** from `{_clean(chunk.doc_id)}` (rank {rank}{token_text})")
+        lines.append(
+            f"- **{_clean(chunk.context_id)}** from `{_clean(chunk.doc_id)}` (rank {rank}{token_text})"
+        )
         lines.append(f"  {_snippet(chunk.text, limit=220)}")
     lines.append("")
     return lines

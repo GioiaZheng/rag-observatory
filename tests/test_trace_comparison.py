@@ -9,7 +9,6 @@ from rag_observatory.compare.traces import compare_traces
 from rag_observatory.reports.comparison import render_markdown_comparison
 from rag_observatory.trace.schema import RagTrace
 
-
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "toy_runs"
 
 

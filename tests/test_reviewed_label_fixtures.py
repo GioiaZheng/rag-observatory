@@ -8,7 +8,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from rag_observatory.taxonomy.failure_modes import FAILURE_MODE_VALUES, classify_trace
 from rag_observatory.trace.schema import RagTrace
 
-
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "reviewed_labels"
 
 

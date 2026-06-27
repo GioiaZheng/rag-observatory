@@ -17,7 +17,6 @@ from rag_observatory.taxonomy.failure_modes import (
 )
 from rag_observatory.trace.schema import RagTrace
 
-
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "toy_runs"
 
@@ -75,9 +74,7 @@ class FailureModeTests(unittest.TestCase):
 
         self.assertIsNone(missing_citation_label(trace))
 
-        data = json.loads(
-            (FIXTURE_DIR / "supported_answer.json").read_text(encoding="utf-8")
-        )
+        data = json.loads((FIXTURE_DIR / "supported_answer.json").read_text(encoding="utf-8"))
         data["answer"]["citations"] = []
         trace_with_missing_citation = RagTrace.from_dict(data)
 
@@ -93,9 +90,7 @@ class FailureModeTests(unittest.TestCase):
         self.assertEqual(label.mode, "wrong_citation")
 
     def test_metric_disagreement_label_function_checks_pass_fail_mix(self) -> None:
-        data = json.loads(
-            (FIXTURE_DIR / "supported_answer.json").read_text(encoding="utf-8")
-        )
+        data = json.loads((FIXTURE_DIR / "supported_answer.json").read_text(encoding="utf-8"))
         data["metrics"][0]["passed"] = True
         data["metrics"][1]["passed"] = False
         trace = RagTrace.from_dict(data)
@@ -113,9 +108,7 @@ class FailureModeTests(unittest.TestCase):
         self.assertIn("unsupported_answer", modes)
 
     def test_manual_labels_take_precedence_over_duplicate_heuristics(self) -> None:
-        data = json.loads(
-            (FIXTURE_DIR / "unsupported_answer.json").read_text(encoding="utf-8")
-        )
+        data = json.loads((FIXTURE_DIR / "unsupported_answer.json").read_text(encoding="utf-8"))
         data["failures"].append(
             {
                 "mode": "unsupported_answer",
