@@ -9,7 +9,6 @@ from rag_observatory.reports.markdown import render_markdown_report
 from rag_observatory.taxonomy.failure_modes import classify_trace
 from rag_observatory.trace.schema import RagTrace
 
-
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "toy_runs"
 
 

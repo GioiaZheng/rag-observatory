@@ -122,8 +122,7 @@ def _compare_metrics(
         elif after_metric is None:
             status = "removed"
         elif (
-            before_metric.value != after_metric.value
-            or before_metric.passed != after_metric.passed
+            before_metric.value != after_metric.value or before_metric.passed != after_metric.passed
         ):
             status = "changed"
         else:

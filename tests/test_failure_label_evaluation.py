@@ -14,7 +14,6 @@ from rag_observatory.reports.failure_label_evaluation import (
     render_markdown_failure_label_evaluation,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_DIR = ROOT / "tests" / "fixtures" / "reviewed_labels"
 
@@ -64,9 +63,7 @@ class FailureLabelEvaluationTests(unittest.TestCase):
         self.assertIsNone(metrics["wrong_citation"].recall)
 
     def test_reviewed_fixtures_evaluate_cleanly_for_current_heuristics(self) -> None:
-        evaluation = evaluate_heuristic_failure_labels(
-            FIXTURE_DIR / "expected_failure_labels.json"
-        )
+        evaluation = evaluate_heuristic_failure_labels(FIXTURE_DIR / "expected_failure_labels.json")
 
         self.assertEqual(evaluation.total_cases, 7)
         self.assertEqual(evaluation.exact_match_count, 7)
@@ -84,9 +81,7 @@ class FailureLabelEvaluationTests(unittest.TestCase):
                 expected_modes=("missing_citation",),
             )
         ]
-        predictions = [
-            LabelPrediction(case_id="case-a", predicted_modes=("wrong_citation",))
-        ]
+        predictions = [LabelPrediction(case_id="case-a", predicted_modes=("wrong_citation",))]
 
         report = render_markdown_failure_label_evaluation(
             evaluate_failure_labels(cases, predictions),

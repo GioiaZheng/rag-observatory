@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from rag_observatory.trace.schema import FailureLabel, RagTrace
@@ -133,7 +134,7 @@ def get_failure_mode_definition(mode: str) -> FailureModeDefinition:
         raise KeyError(f"unknown failure mode: {mode}") from exc
 
 
-def classify_trace(trace: "RagTrace") -> list["FailureLabel"]:
+def classify_trace(trace: RagTrace) -> list[FailureLabel]:
     """Preserve manual labels and add conservative heuristic labels."""
 
     labels = list(trace.failures)
@@ -149,7 +150,7 @@ def classify_trace(trace: "RagTrace") -> list["FailureLabel"]:
     return labels
 
 
-def retrieval_miss_label(trace: "RagTrace") -> "FailureLabel | None":
+def retrieval_miss_label(trace: RagTrace) -> FailureLabel | None:
     relevance_annotations = [doc.is_relevant for doc in trace.retrieved_documents]
     annotated_retrieved = [value for value in relevance_annotations if value is not None]
 
@@ -170,7 +171,7 @@ def retrieval_miss_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def retrieval_noise_label(trace: "RagTrace") -> "FailureLabel | None":
+def retrieval_noise_label(trace: RagTrace) -> FailureLabel | None:
     relevance_annotations = [doc.is_relevant for doc in trace.retrieved_documents]
     if any(value is False for value in relevance_annotations):
         return _heuristic_label(
@@ -182,10 +183,8 @@ def retrieval_noise_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def context_truncation_label(trace: "RagTrace") -> "FailureLabel | None":
-    relevant_doc_ids = {
-        doc.doc_id for doc in trace.retrieved_documents if doc.is_relevant is True
-    }
+def context_truncation_label(trace: RagTrace) -> FailureLabel | None:
+    relevant_doc_ids = {doc.doc_id for doc in trace.retrieved_documents if doc.is_relevant is True}
     selected_doc_ids = {chunk.doc_id for chunk in trace.selected_context}
     if relevant_doc_ids and not (selected_doc_ids & relevant_doc_ids):
         return _heuristic_label(
@@ -197,7 +196,7 @@ def context_truncation_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def context_pollution_label(trace: "RagTrace") -> "FailureLabel | None":
+def context_pollution_label(trace: RagTrace) -> FailureLabel | None:
     irrelevant_doc_ids = {
         doc.doc_id for doc in trace.retrieved_documents if doc.is_relevant is False
     }
@@ -212,7 +211,7 @@ def context_pollution_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def reranking_error_label(trace: "RagTrace") -> "FailureLabel | None":
+def reranking_error_label(trace: RagTrace) -> FailureLabel | None:
     if trace.reranked_documents:
         ranked_docs = sorted(
             trace.reranked_documents,
@@ -230,7 +229,7 @@ def reranking_error_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def metric_disagreement_label(trace: "RagTrace") -> "FailureLabel | None":
+def metric_disagreement_label(trace: RagTrace) -> FailureLabel | None:
     metric_pass_values = [metric.passed for metric in trace.metrics if metric.passed is not None]
     if any(value is True for value in metric_pass_values) and any(
         value is False for value in metric_pass_values
@@ -244,13 +243,11 @@ def metric_disagreement_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def unsupported_answer_label(trace: "RagTrace") -> "FailureLabel | None":
+def unsupported_answer_label(trace: RagTrace) -> FailureLabel | None:
     for metric in trace.metrics:
         metric_name = metric.name.lower()
         if metric.passed is False and (
-            "faithfulness" in metric_name
-            or "support" in metric_name
-            or "grounded" in metric_name
+            "faithfulness" in metric_name or "support" in metric_name or "grounded" in metric_name
         ):
             return _heuristic_label(
                 "unsupported_answer",
@@ -261,7 +258,7 @@ def unsupported_answer_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def missing_citation_label(trace: "RagTrace") -> "FailureLabel | None":
+def missing_citation_label(trace: RagTrace) -> FailureLabel | None:
     citations_expected = trace.metadata.pipeline_stages.get("citations") is True
     if citations_expected and not trace.answer.citations:
         return _heuristic_label(
@@ -273,7 +270,7 @@ def missing_citation_label(trace: "RagTrace") -> "FailureLabel | None":
     return None
 
 
-def wrong_citation_label(trace: "RagTrace") -> "FailureLabel | None":
+def wrong_citation_label(trace: RagTrace) -> FailureLabel | None:
     irrelevant_doc_ids = {
         doc.doc_id for doc in trace.retrieved_documents if doc.is_relevant is False
     }
@@ -310,7 +307,7 @@ def _heuristic_label(
     severity: str,
     evidence: str,
     rationale: str,
-) -> "FailureLabel":
+) -> FailureLabel:
     from rag_observatory.trace.schema import FailureLabel
 
     return FailureLabel(

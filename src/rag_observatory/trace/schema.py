@@ -5,7 +5,6 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
-
 JsonObject = dict[str, Any]
 
 
@@ -132,7 +131,7 @@ class RunMetadata:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "RunMetadata":
+    def from_dict(cls, value: Any) -> RunMetadata:
         data = _expect_mapping(value, "metadata")
         _reject_unknown(
             data,
@@ -192,7 +191,7 @@ class Query:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "Query":
+    def from_dict(cls, value: Any) -> Query:
         data = _expect_mapping(value, "query")
         _reject_unknown(data, {"query_id", "text", "gold_answer", "extra"}, "query")
         return cls(
@@ -223,7 +222,7 @@ class Document:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "Document":
+    def from_dict(cls, value: Any) -> Document:
         data = _expect_mapping(value, "document")
         _reject_unknown(
             data,
@@ -264,7 +263,7 @@ class ContextChunk:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "ContextChunk":
+    def from_dict(cls, value: Any) -> ContextChunk:
         data = _expect_mapping(value, "context_chunk")
         _reject_unknown(
             data,
@@ -299,7 +298,7 @@ class Prompt:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "Prompt":
+    def from_dict(cls, value: Any) -> Prompt:
         data = _expect_mapping(value, "prompt")
         _reject_unknown(data, {"content", "template_id", "variables", "extra"}, "prompt")
         content = _optional_str(data, "content", "prompt")
@@ -331,7 +330,7 @@ class Citation:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "Citation":
+    def from_dict(cls, value: Any) -> Citation:
         data = _expect_mapping(value, "citation")
         _reject_unknown(data, {"doc_id", "quote", "span_start", "span_end", "extra"}, "citation")
         return cls(
@@ -359,7 +358,7 @@ class Answer:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "Answer":
+    def from_dict(cls, value: Any) -> Answer:
         data = _expect_mapping(value, "answer")
         _reject_unknown(data, {"text", "citations", "extra"}, "answer")
         return cls(
@@ -386,7 +385,7 @@ class Metric:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "Metric":
+    def from_dict(cls, value: Any) -> Metric:
         data = _expect_mapping(value, "metric")
         _reject_unknown(data, {"name", "value", "passed", "threshold", "notes", "extra"}, "metric")
         if "value" not in data:
@@ -422,7 +421,7 @@ class FailureLabel:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "FailureLabel":
+    def from_dict(cls, value: Any) -> FailureLabel:
         data = _expect_mapping(value, "failure_label")
         _reject_unknown(
             data,
@@ -457,7 +456,7 @@ class DiagnosticNote:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "DiagnosticNote":
+    def from_dict(cls, value: Any) -> DiagnosticNote:
         data = _expect_mapping(value, "diagnostic_note")
         _reject_unknown(data, {"stage", "note", "extra"}, "diagnostic_note")
         return cls(
@@ -489,7 +488,7 @@ class RagTrace:
     extra: JsonObject = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: Any) -> "RagTrace":
+    def from_dict(cls, value: Any) -> RagTrace:
         data = _expect_mapping(value, "trace")
         _reject_unknown(
             data,
@@ -537,7 +536,7 @@ class RagTrace:
         return trace
 
     @classmethod
-    def from_json(cls, text: str) -> "RagTrace":
+    def from_json(cls, text: str) -> RagTrace:
         try:
             data = json.loads(text)
         except json.JSONDecodeError as exc:

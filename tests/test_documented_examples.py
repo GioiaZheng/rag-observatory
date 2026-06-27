@@ -9,7 +9,6 @@ from rag_observatory.reports.markdown import render_markdown_report
 from rag_observatory.taxonomy.failure_modes import classify_trace
 from rag_observatory.trace.schema import RagTrace
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -22,9 +21,9 @@ class DocumentedExampleTests(unittest.TestCase):
         )
         trace = RagTrace.from_dict(trace_data)
         expected_report = render_markdown_report(trace, failure_labels=classify_trace(trace))
-        documented_report = (ROOT / "docs" / "examples" / "synthetic_diagnostic_report.md").read_text(
-            encoding="utf-8"
-        )
+        documented_report = (
+            ROOT / "docs" / "examples" / "synthetic_diagnostic_report.md"
+        ).read_text(encoding="utf-8")
 
         self.assertEqual(documented_report, expected_report)
 

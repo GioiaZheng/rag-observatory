@@ -24,7 +24,9 @@ def build_parser() -> argparse.ArgumentParser:
     compare = subparsers.add_parser("compare", help="Render a markdown trace comparison.")
     compare.add_argument("before", help="Path to the baseline RAG trace JSON file.")
     compare.add_argument("after", help="Path to the comparison RAG trace JSON file.")
-    compare.add_argument("--output", "-o", help="Output markdown file. Prints to stdout if omitted.")
+    compare.add_argument(
+        "--output", "-o", help="Output markdown file. Prints to stdout if omitted."
+    )
 
     evaluate_labels = subparsers.add_parser(
         "evaluate-labels",
