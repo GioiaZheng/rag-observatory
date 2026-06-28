@@ -89,6 +89,15 @@ A public-safe synthetic example of the rendered report shape is checked in at
 Generated run outputs should still be written outside the committed tree, such
 as under an ignored `outputs/` directory.
 
+For dataset-scale trace parsing, keep individual traces inspectable and use the
+streaming JSONL collection format documented in
+[`docs/streaming_trace_storage.md`](docs/streaming_trace_storage.md). A
+synthetic throughput and peak-memory smoke test is available with:
+
+```bash
+python scripts/benchmark_trace_io.py --sizes 1000 10000 50000 --output outputs/benchmarks/trace-io
+```
+
 ## Project Boundaries
 
 This repository focuses on:
