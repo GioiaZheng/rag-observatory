@@ -1,0 +1,9 @@
+.git
+.venv
+venv
+env
+__pycache__
+.mypy_cache
+.ruff_cache
+.pytest_cache
+outputs/benchmarks/trace-io-smoke

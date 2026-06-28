@@ -20,9 +20,11 @@ outputs/
 runs/
 artifacts/
 reports/generated/
-data/raw/
+data/raw/*
+!data/raw/*.dvc
 data/cache/
-data/processed/
+data/processed/*
+!data/processed/*.dvc
 *.jsonl
 
 .ipynb_checkpoints/

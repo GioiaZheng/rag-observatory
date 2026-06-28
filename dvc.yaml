@@ -1,0 +1,9 @@
+stages:
+  trace_io_smoke:
+    cmd: python scripts/benchmark_trace_io.py --sizes 1000 --output outputs/benchmarks/trace-io-dvc
+    deps:
+      - scripts/benchmark_trace_io.py
+      - src/rag_observatory/io/json.py
+      - src/rag_observatory/trace/schema.py
+    outs:
+      - outputs/benchmarks/trace-io-dvc
