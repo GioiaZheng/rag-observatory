@@ -119,6 +119,9 @@ Large experiment artifacts are managed outside Git by default. Optional DVC
 metadata and workflows are documented in
 [`docs/artifact_versioning.md`](docs/artifact_versioning.md).
 
+Container build and smoke-test commands are documented in
+[`docs/container.md`](docs/container.md).
+
 ## Project Boundaries
 
 This repository focuses on:
