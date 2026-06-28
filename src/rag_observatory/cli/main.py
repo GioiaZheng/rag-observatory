@@ -4,12 +4,14 @@ import argparse
 from pathlib import Path
 
 from rag_observatory.evaluation.failure_labels import evaluate_heuristic_failure_labels
+from rag_observatory.evaluation.quality import evaluate_rule_based_quality
 from rag_observatory.io.json import load_trace
 from rag_observatory.reports.comparison import render_markdown_comparison
 from rag_observatory.reports.failure_label_evaluation import (
     render_markdown_failure_label_evaluation,
 )
 from rag_observatory.reports.markdown import render_markdown_report
+from rag_observatory.reports.quality import render_markdown_quality_evaluation
 from rag_observatory.taxonomy.failure_modes import classify_trace
 
 
@@ -42,6 +44,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="Output markdown file. Prints to stdout if omitted.",
     )
 
+    evaluate_quality = subparsers.add_parser(
+        "evaluate-quality",
+        help="Render a markdown quality evaluator comparison report.",
+    )
+    evaluate_quality.add_argument(
+        "expected_scores",
+        help="Path to a reviewed expected quality scores JSON file.",
+    )
+    evaluate_quality.add_argument(
+        "--output",
+        "-o",
+        help="Output markdown file. Prints to stdout if omitted.",
+    )
+
     return parser
 
 
@@ -64,8 +80,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "evaluate-labels":
-        evaluation = evaluate_heuristic_failure_labels(args.expected_labels)
-        report = render_markdown_failure_label_evaluation(evaluation)
+        label_evaluation = evaluate_heuristic_failure_labels(args.expected_labels)
+        report = render_markdown_failure_label_evaluation(label_evaluation)
+        _write_or_print(report, args.output)
+        return 0
+
+    if args.command == "evaluate-quality":
+        quality_evaluation = evaluate_rule_based_quality(args.expected_scores)
+        report = render_markdown_quality_evaluation(quality_evaluation)
         _write_or_print(report, args.output)
         return 0
 

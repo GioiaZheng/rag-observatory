@@ -84,6 +84,23 @@ $env:PYTHONPATH = "src"
 python -m rag_observatory.cli.main evaluate-labels tests/fixtures/reviewed_labels/expected_failure_labels.json --output outputs/reports/failure_label_evaluation.md
 ```
 
+Evaluate core RAG quality dimensions against reviewed expected scores:
+
+```bash
+PYTHONPATH=src python -m rag_observatory.cli.main evaluate-quality tests/fixtures/quality_evaluation/expected_quality_scores.json --output outputs/reports/quality_evaluation.md
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m rag_observatory.cli.main evaluate-quality tests/fixtures/quality_evaluation/expected_quality_scores.json --output outputs/reports/quality_evaluation.md
+```
+
+The evaluator protocol for context relevance, faithfulness, answer relevance,
+provenance, and abstention is documented in
+[`docs/evaluator_protocol.md`](docs/evaluator_protocol.md).
+
 A public-safe synthetic example of the rendered report shape is checked in at
 [`docs/examples/synthetic_diagnostic_report.md`](docs/examples/synthetic_diagnostic_report.md).
 Generated run outputs should still be written outside the committed tree, such

@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "run_id": "toy-quality-abstain",
+    "timestamp": "2026-06-28T00:00:00Z",
+    "dataset": "toy_rag_observatory",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "context_selection": true,
+      "generation": true,
+      "evaluation": false
+    }
+  },
+  "query": {
+    "query_id": "q-abstain",
+    "text": "What should the evaluator do without reviewable signals?"
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-abstain",
+      "text": "This trace intentionally omits relevance annotations and quality metrics.",
+      "rank": 1,
+      "score": 0.5
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-abstain",
+      "doc_id": "doc-abstain",
+      "text": "This trace intentionally omits relevance annotations and quality metrics.",
+      "rank": 1,
+      "token_count": 9
+    }
+  ],
+  "answer": {
+    "text": "The evaluator should abstain when there are no reviewable signals."
+  },
+  "metrics": [],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "evaluation",
+      "note": "Synthetic abstention case for quality evaluator contract tests."
+    }
+  ]
+}
