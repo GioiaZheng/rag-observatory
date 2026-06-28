@@ -150,6 +150,10 @@ Modeling investigations should stay optional and evidence-gated. The current
 lightweight classifier note is in
 [`docs/lightweight_failure_classifier_plan.md`](docs/lightweight_failure_classifier_plan.md).
 
+Research claims should stay tied to explicit evidence requirements. The current
+system-demonstration evidence agenda is in
+[`docs/research_evidence_plan.md`](docs/research_evidence_plan.md).
+
 ## Repository Layout
 
 ```text
