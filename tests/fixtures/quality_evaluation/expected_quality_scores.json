@@ -1,0 +1,88 @@
+{
+  "cases": [
+    {
+      "case_id": "supported",
+      "trace_path": "../toy_runs/supported_answer.json",
+      "expected_scores": [
+        {
+          "dimension": "context_relevance",
+          "passed": true,
+          "abstained": false
+        },
+        {
+          "dimension": "faithfulness",
+          "passed": true,
+          "abstained": false
+        },
+        {
+          "dimension": "answer_relevance",
+          "passed": true,
+          "abstained": false
+        }
+      ]
+    },
+    {
+      "case_id": "unsupported",
+      "trace_path": "../toy_runs/unsupported_answer.json",
+      "expected_scores": [
+        {
+          "dimension": "context_relevance",
+          "passed": true,
+          "abstained": false
+        },
+        {
+          "dimension": "faithfulness",
+          "passed": false,
+          "abstained": false
+        },
+        {
+          "dimension": "answer_relevance",
+          "passed": false,
+          "abstained": false
+        }
+      ]
+    },
+    {
+      "case_id": "irrelevant_context",
+      "trace_path": "../toy_runs/retrieval_miss.json",
+      "expected_scores": [
+        {
+          "dimension": "context_relevance",
+          "passed": false,
+          "abstained": false
+        },
+        {
+          "dimension": "faithfulness",
+          "passed": null,
+          "abstained": true
+        },
+        {
+          "dimension": "answer_relevance",
+          "passed": false,
+          "abstained": false
+        }
+      ]
+    },
+    {
+      "case_id": "abstained_no_signals",
+      "trace_path": "abstain_no_signals.json",
+      "expected_scores": [
+        {
+          "dimension": "context_relevance",
+          "passed": null,
+          "abstained": true
+        },
+        {
+          "dimension": "faithfulness",
+          "passed": null,
+          "abstained": true
+        },
+        {
+          "dimension": "answer_relevance",
+          "passed": null,
+          "abstained": true
+        }
+      ]
+    }
+  ]
+}
