@@ -32,3 +32,23 @@ jobs:
 
       - name: Run tests
         run: python -m unittest discover -s tests
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Build Docker image
+        run: docker build --tag rag-observatory:test .
+
+      - name: Run tests in Docker image
+        run: docker run --rm rag-observatory:test
+
+      - name: Run CLI smoke test in Docker image
+        run: >
+          docker run --rm rag-observatory:test
+          rag-observe report
+          tests/fixtures/toy_runs/unsupported_answer.json
+          --output /tmp/unsupported_answer.md
