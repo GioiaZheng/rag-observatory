@@ -115,6 +115,10 @@ synthetic throughput and peak-memory smoke test is available with:
 python scripts/benchmark_trace_io.py --sizes 1000 10000 50000 --output outputs/benchmarks/trace-io
 ```
 
+Large experiment artifacts are managed outside Git by default. Optional DVC
+metadata and workflows are documented in
+[`docs/artifact_versioning.md`](docs/artifact_versioning.md).
+
 ## Project Boundaries
 
 This repository focuses on:

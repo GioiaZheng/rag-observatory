@@ -1,0 +1,4 @@
+[core]
+    remote = local_artifacts
+['remote "local_artifacts"']
+    url = ../rag-observatory-dvc
