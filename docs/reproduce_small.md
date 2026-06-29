@@ -26,6 +26,7 @@ outputs/reproduce-small/
   reports/
     msmarco_genqa_diagnostic.md
     msmarco_genqa_diagnostic.html
+    msmarco_genqa_diagnostic.svg
     benchmark_comparison.md
 ```
 
@@ -41,3 +42,6 @@ The workflow uses synthetic public-safe inputs in
 
 This is not a leaderboard. The example is deliberately small so it can run in
 CI and remain easy to inspect.
+
+The HTML report and SVG preview are documented in
+[`docs/report_artifacts.md`](report_artifacts.md).

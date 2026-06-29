@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import html
 import json
 import sys
 from pathlib import Path
@@ -40,10 +39,11 @@ def main(argv: list[str] | None = None) -> int:
     diagnostic_markdown = modules["render_markdown_report"](trace, failure_labels=labels)
     paths["diagnostic_markdown"].write_text(diagnostic_markdown, encoding="utf-8")
     paths["diagnostic_html"].write_text(
-        _render_html_document(
-            title="RAG Diagnostic Report",
-            markdown_text=diagnostic_markdown,
-        ),
+        modules["render_html_report"](trace, failure_labels=labels),
+        encoding="utf-8",
+    )
+    paths["diagnostic_screenshot"].write_text(
+        modules["render_report_screenshot_svg"](trace, failure_labels=labels),
         encoding="utf-8",
     )
 
@@ -66,6 +66,7 @@ def _load_modules() -> dict[str, Any]:
     from rag_observatory.adapters.msmarco_genqa import load_msmarco_genqa_trace
     from rag_observatory.io.json import dump_trace, load_trace
     from rag_observatory.reports.comparison import render_markdown_comparison
+    from rag_observatory.reports.html import render_html_report, render_report_screenshot_svg
     from rag_observatory.reports.markdown import render_markdown_report
     from rag_observatory.taxonomy.failure_modes import classify_trace
 
@@ -76,6 +77,8 @@ def _load_modules() -> dict[str, Any]:
         "load_trace": load_trace,
         "render_markdown_comparison": render_markdown_comparison,
         "render_markdown_report": render_markdown_report,
+        "render_html_report": render_html_report,
+        "render_report_screenshot_svg": render_report_screenshot_svg,
     }
 
 
@@ -84,6 +87,7 @@ def _output_paths(output_dir: Path) -> dict[str, Path]:
         "trace": output_dir / "traces" / "msmarco_genqa_trace.json",
         "diagnostic_markdown": output_dir / "reports" / "msmarco_genqa_diagnostic.md",
         "diagnostic_html": output_dir / "reports" / "msmarco_genqa_diagnostic.html",
+        "diagnostic_screenshot": output_dir / "reports" / "msmarco_genqa_diagnostic.svg",
         "comparison_markdown": output_dir / "reports" / "benchmark_comparison.md",
         "manifest": output_dir / "manifest.json",
     }
@@ -102,51 +106,12 @@ def _manifest(output_dir: Path, paths: dict[str, Path], labels: list[Any]) -> di
             "trace_schema_json": _relative(paths["trace"], output_dir),
             "markdown_report": _relative(paths["diagnostic_markdown"], output_dir),
             "html_report": _relative(paths["diagnostic_html"], output_dir),
+            "screenshot_svg": _relative(paths["diagnostic_screenshot"], output_dir),
             "benchmark_comparison": _relative(paths["comparison_markdown"], output_dir),
         },
         "failure_modes": sorted({label.mode for label in labels}),
         "taxonomy_reference": "failure_taxonomy/README.md",
     }
-
-
-def _render_html_document(*, title: str, markdown_text: str) -> str:
-    escaped_title = html.escape(title)
-    escaped_markdown = html.escape(markdown_text)
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{escaped_title}</title>
-  <style>
-    body {{
-      color: #17231f;
-      background: #f7f5ef;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.5;
-      margin: 0;
-      padding: 2rem;
-    }}
-    main {{
-      background: #fffdf8;
-      border: 1px solid #ddd7c8;
-      margin: 0 auto;
-      max-width: 980px;
-      padding: 2rem;
-    }}
-    pre {{
-      white-space: pre-wrap;
-      word-break: break-word;
-    }}
-  </style>
-</head>
-<body>
-  <main>
-    <pre>{escaped_markdown}</pre>
-  </main>
-</body>
-</html>
-"""
 
 
 def _relative(path: Path, root: Path) -> str:
