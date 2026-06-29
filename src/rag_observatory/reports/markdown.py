@@ -5,7 +5,13 @@ from rag_observatory.taxonomy.failure_modes import (
     classify_trace,
     get_failure_mode_definition,
 )
-from rag_observatory.trace.schema import Document, FailureLabel, RagTrace
+from rag_observatory.trace.schema import (
+    ClaimDiagnosis,
+    ClaimEvidenceRef,
+    Document,
+    FailureLabel,
+    RagTrace,
+)
 
 
 def render_markdown_report(
@@ -25,6 +31,8 @@ def render_markdown_report(
         lines.extend(_documents_section("Reranked Documents", trace.reranked_documents))
     lines.extend(_context_section(trace))
     lines.extend(_citations_section(trace))
+    if trace.claims:
+        lines.extend(_claims_section(trace.claims))
     lines.extend(_metrics_section(trace))
     lines.extend(_failures_section(labels))
     lines.extend(_likely_source_section(labels))
@@ -124,6 +132,63 @@ def _citations_section(trace: RagTrace) -> list[str]:
         lines.append(f"- `{_clean(citation.doc_id)}`{quote}")
     lines.append("")
     return lines
+
+
+def _claims_section(claims: list[ClaimDiagnosis]) -> list[str]:
+    lines = ["## Claim-Level Diagnosis", ""]
+    lines.extend(_claim_summary_table("Support Summary", _count_by(claims, "support_label")))
+    lines.extend(_claim_summary_table("Attribution Summary", _count_by(claims, "failure_category")))
+    lines.extend(
+        [
+            "| Claim | Support | Attribution | Evidence | Notes |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+    )
+    for claim in claims:
+        notes = "; ".join(claim.diagnostic_notes)
+        lines.append(
+            "| "
+            f"`{_clean(claim.claim_id)}`: {_clean(claim.text)} | "
+            f"`{_clean(claim.support_label)}` | "
+            f"`{_clean(claim.failure_category)}` | "
+            f"{_format_claim_evidence(claim.evidence)} | "
+            f"{_clean(notes)} |"
+        )
+    lines.append("")
+    return lines
+
+
+def _claim_summary_table(title: str, counts: dict[str, int]) -> list[str]:
+    lines = [f"### {title}", "", "| Label | Claims |", "| --- | ---: |"]
+    for label, count in sorted(counts.items()):
+        lines.append(f"| `{_clean(label)}` | {count} |")
+    lines.append("")
+    return lines
+
+
+def _count_by(claims: list[ClaimDiagnosis], field_name: str) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for claim in claims:
+        key = getattr(claim, field_name)
+        counts[key] = counts.get(key, 0) + 1
+    return counts
+
+
+def _format_claim_evidence(evidence_refs: list[ClaimEvidenceRef]) -> str:
+    if not evidence_refs:
+        return "none"
+
+    refs: list[str] = []
+    for evidence in evidence_refs:
+        parts: list[str] = []
+        if evidence.context_id:
+            parts.append(f"context `{_clean(evidence.context_id)}`")
+        if evidence.doc_id:
+            parts.append(f"doc `{_clean(evidence.doc_id)}`")
+        if evidence.quote:
+            parts.append(_snippet(evidence.quote, limit=80))
+        refs.append(" / ".join(parts))
+    return "<br>".join(refs)
 
 
 def _metrics_section(trace: RagTrace) -> list[str]:
