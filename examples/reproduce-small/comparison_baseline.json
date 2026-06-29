@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "run_id": "small-comparison-baseline",
+    "timestamp": "2026-06-29T00:00:00Z",
+    "dataset": "rag-observatory-small-example",
+    "retriever": "synthetic-bm25",
+    "generator": "synthetic-generator",
+    "evaluator": "rule-based-review",
+    "pipeline_stages": {
+      "retrieval": true,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "small-q001",
+    "text": "Who discovered penicillin?",
+    "gold_answer": "Alexander Fleming discovered penicillin."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "baseline-doc-insulin",
+      "title": "Insulin",
+      "text": "Frederick Banting and Charles Best contributed to the discovery of insulin.",
+      "score": 0.87,
+      "rank": 1,
+      "is_relevant": false
+    },
+    {
+      "doc_id": "baseline-doc-penicillin",
+      "title": "Penicillin",
+      "text": "Alexander Fleming discovered penicillin in 1928.",
+      "score": 0.62,
+      "rank": 2,
+      "is_relevant": true
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "baseline-ctx-insulin",
+      "doc_id": "baseline-doc-insulin",
+      "text": "Frederick Banting and Charles Best contributed to the discovery of insulin.",
+      "rank": 1,
+      "token_count": 11
+    }
+  ],
+  "answer": {
+    "text": "Frederick Banting discovered penicillin.",
+    "citations": [
+      {
+        "doc_id": "baseline-doc-insulin",
+        "quote": "Frederick Banting and Charles Best contributed to the discovery of insulin."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "faithfulness",
+      "value": 0.2,
+      "passed": false,
+      "threshold": 0.8,
+      "notes": "The answer uses a person from irrelevant context."
+    },
+    {
+      "name": "answer_correctness",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [
+    {
+      "mode": "context_pollution",
+      "detection_method": "manual",
+      "severity": "high",
+      "evidence": "The selected context is about insulin, not penicillin.",
+      "rationale": "The generator used a distracting retrieved document."
+    }
+  ]
+}

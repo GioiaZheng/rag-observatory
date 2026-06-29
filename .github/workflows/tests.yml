@@ -33,6 +33,9 @@ jobs:
       - name: Run tests
         run: python -m unittest discover -s tests
 
+      - name: Run small reproduction workflow
+        run: make reproduce-small
+
   docker:
     runs-on: ubuntu-latest
 
