@@ -28,6 +28,7 @@ outputs/reproduce-small/
     msmarco_genqa_diagnostic.html
     msmarco_genqa_diagnostic.svg
     benchmark_comparison.md
+    failure_pattern_benchmark.md
 ```
 
 The workflow uses synthetic public-safe inputs in
@@ -39,9 +40,14 @@ The workflow uses synthetic public-safe inputs in
 - `comparison_baseline.json` and `comparison_reranked.json` provide a small
   before/after comparison showing how pipeline changes alter observable failure
   patterns.
+- `benchmark_variants.json` lists the small pipeline variants used by the
+  failure-pattern benchmark summary.
 
 This is not a leaderboard. The example is deliberately small so it can run in
 CI and remain easy to inspect.
 
 The HTML report and SVG preview are documented in
 [`docs/report_artifacts.md`](report_artifacts.md).
+
+The failure-pattern benchmark summary is documented in
+[`docs/benchmark_comparison.md`](benchmark_comparison.md).

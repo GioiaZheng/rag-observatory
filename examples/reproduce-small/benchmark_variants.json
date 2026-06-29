@@ -1,0 +1,18 @@
+{
+  "format": "rag-observatory.failure-pattern-benchmark.v1",
+  "benchmark_id": "small-failure-patterns-v1",
+  "dataset": "rag-observatory-small-example",
+  "description": "Synthetic two-variant comparison for failure-pattern inspection, not leaderboard scoring.",
+  "variants": [
+    {
+      "name": "baseline",
+      "trace_path": "comparison_baseline.json",
+      "description": "Retrieval-only context selection exposes a distracting insulin document."
+    },
+    {
+      "name": "reranked",
+      "trace_path": "comparison_reranked.json",
+      "description": "Reranking promotes the relevant penicillin document before context selection."
+    }
+  ]
+}

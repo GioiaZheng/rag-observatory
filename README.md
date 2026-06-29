@@ -36,8 +36,9 @@ python scripts/reproduce_small.py --output-dir outputs/reproduce-small
 ```
 
 This writes a normalized trace, Markdown report, HTML report, benchmark
-comparison, screenshot preview, and manifest under `outputs/reproduce-small/`.
-The workflow is documented in [`docs/reproduce_small.md`](docs/reproduce_small.md).
+comparison, failure-pattern benchmark summary, screenshot preview, and manifest
+under `outputs/reproduce-small/`. The workflow is documented in
+[`docs/reproduce_small.md`](docs/reproduce_small.md).
 
 Run the tests:
 
@@ -91,6 +92,12 @@ On Windows PowerShell:
 ```powershell
 $env:PYTHONPATH = "src"
 python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
+```
+
+Render a small failure-pattern benchmark summary:
+
+```bash
+PYTHONPATH=src python -m rag_observatory.cli.main benchmark-summary examples/reproduce-small/benchmark_variants.json --output outputs/reports/failure_pattern_benchmark.md
 ```
 
 Render a conversational report from per-turn traces:
@@ -163,6 +170,9 @@ as under an ignored `outputs/` directory.
 
 HTML report artifacts and screenshot previews are documented in
 [`docs/report_artifacts.md`](docs/report_artifacts.md).
+
+Small failure-pattern benchmark comparisons are documented in
+[`docs/benchmark_comparison.md`](docs/benchmark_comparison.md).
 
 For dataset-scale trace parsing, keep individual traces inspectable and use the
 streaming JSONL collection format documented in
