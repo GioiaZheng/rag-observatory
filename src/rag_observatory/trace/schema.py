@@ -94,6 +94,20 @@ def _optional_bool_map(data: Mapping[str, Any], key: str, label: str) -> dict[st
     return result
 
 
+def _optional_str_list(data: Mapping[str, Any], key: str, label: str) -> list[str]:
+    value = data.get(key, [])
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise TraceValidationError(f"{label}.{key} must be a list")
+    result: list[str] = []
+    for index, item in enumerate(value):
+        if not isinstance(item, str) or not item.strip():
+            raise TraceValidationError(f"{label}.{key}[{index}] must be a non-empty string")
+        result.append(item)
+    return result
+
+
 def _ensure_jsonable(value: Any, label: str) -> None:
     try:
         json.dumps(value)
@@ -113,6 +127,63 @@ def _list_from(
     if not isinstance(value, list):
         raise TraceValidationError(f"{label}.{key} must be a list")
     return [factory(item) for item in value]
+
+
+@dataclass(frozen=True)
+class ConversationTurn:
+    conversation_id: str
+    turn_id: str
+    original_turn_text: str
+    turn_index: int | None = None
+    standalone_query: str | None = None
+    prior_turn_references: list[str] = field(default_factory=list)
+    answerability: str = "unknown"
+    extra: JsonObject = field(default_factory=dict)
+
+    @classmethod
+    def from_dict(cls, value: Any) -> ConversationTurn:
+        data = _expect_mapping(value, "conversation")
+        _reject_unknown(
+            data,
+            {
+                "conversation_id",
+                "turn_id",
+                "turn_index",
+                "original_turn_text",
+                "standalone_query",
+                "prior_turn_references",
+                "answerability",
+                "extra",
+            },
+            "conversation",
+        )
+        answerability = _optional_str(data, "answerability", "conversation") or "unknown"
+        if answerability not in {"answerable", "unanswerable", "unknown"}:
+            raise TraceValidationError(
+                "conversation.answerability must be answerable, unanswerable, or unknown"
+            )
+        return cls(
+            conversation_id=_required_str(data, "conversation_id", "conversation"),
+            turn_id=_required_str(data, "turn_id", "conversation"),
+            turn_index=_optional_int(data, "turn_index", "conversation"),
+            original_turn_text=_required_str(data, "original_turn_text", "conversation"),
+            standalone_query=_optional_str(data, "standalone_query", "conversation"),
+            prior_turn_references=_optional_str_list(data, "prior_turn_references", "conversation"),
+            answerability=answerability,
+            extra=_optional_object(data, "extra", "conversation"),
+        )
+
+    def to_dict(self) -> JsonObject:
+        return {
+            "conversation_id": self.conversation_id,
+            "turn_id": self.turn_id,
+            "turn_index": self.turn_index,
+            "original_turn_text": self.original_turn_text,
+            "standalone_query": self.standalone_query,
+            "prior_turn_references": list(self.prior_turn_references),
+            "answerability": self.answerability,
+            "extra": dict(self.extra),
+        }
 
 
 @dataclass(frozen=True)
@@ -480,6 +551,7 @@ class RagTrace:
     retrieved_documents: list[Document]
     selected_context: list[ContextChunk]
     answer: Answer
+    conversation: ConversationTurn | None = None
     reranked_documents: list[Document] = field(default_factory=list)
     prompt: Prompt | None = None
     metrics: list[Metric] = field(default_factory=list)
@@ -494,6 +566,7 @@ class RagTrace:
             data,
             {
                 "metadata",
+                "conversation",
                 "query",
                 "retrieved_documents",
                 "reranked_documents",
@@ -518,6 +591,9 @@ class RagTrace:
             retrieved_documents=_list_from(
                 data, "retrieved_documents", "trace", Document.from_dict
             ),
+            conversation=ConversationTurn.from_dict(data["conversation"])
+            if data.get("conversation") is not None
+            else None,
             reranked_documents=_list_from(data, "reranked_documents", "trace", Document.from_dict),
             selected_context=_list_from(data, "selected_context", "trace", ContextChunk.from_dict),
             prompt=Prompt.from_dict(prompt) if prompt is not None else None,
@@ -546,6 +622,7 @@ class RagTrace:
     def to_dict(self) -> JsonObject:
         return {
             "metadata": self.metadata.to_dict(),
+            "conversation": self.conversation.to_dict() if self.conversation is not None else None,
             "query": self.query.to_dict(),
             "retrieved_documents": [doc.to_dict() for doc in self.retrieved_documents],
             "reranked_documents": [doc.to_dict() for doc in self.reranked_documents],

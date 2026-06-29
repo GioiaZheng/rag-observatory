@@ -12,6 +12,7 @@ Required top-level fields:
 
 Optional top-level fields:
 
+- `conversation`
 - `reranked_documents`
 - `prompt`
 - `metrics`
@@ -48,6 +49,9 @@ This is the smallest shape accepted by the current schema:
 
 - `metadata` records run ID, timestamp, dataset, component names, seed, and
   available pipeline stages.
+- `conversation` records optional multi-turn metadata such as conversation ID,
+  turn ID, original turn text, rewritten standalone query, prior-turn
+  references, and answerability.
 - `query` records query ID, text, and optional gold answer.
 - `retrieved_documents` records candidate evidence with rank, score, and
   optional relevance annotation.
@@ -173,3 +177,30 @@ extension data that is not stable enough to become part of the public schema:
 Do not place unknown fields beside schema fields. For example,
 `metadata.experiment_group` is rejected, while
 `metadata.extra.experiment_group` is accepted.
+
+## Conversational Traces
+
+Single-turn traces remain valid when `conversation` is omitted or `null`.
+Conversational RAG runs should be represented as one validated trace per turn,
+with shared `conversation.conversation_id` and stable `conversation.turn_id`
+values. This keeps retrieval candidates, selected context, answers, metrics,
+and failure labels local to the turn that produced them.
+
+```json
+{
+  "conversation": {
+    "conversation_id": "conv-penicillin",
+    "turn_id": "turn-002",
+    "turn_index": 2,
+    "original_turn_text": "When was it discovered?",
+    "standalone_query": "When was penicillin discovered?",
+    "prior_turn_references": ["turn-001"],
+    "answerability": "answerable"
+  }
+}
+```
+
+`answerability` must be `answerable`, `unanswerable`, or `unknown`. A
+conversation report can group multiple per-turn traces and distinguish
+retrieval failures associated with query rewriting from failures caused by
+insufficient evidence for unanswerable turns.

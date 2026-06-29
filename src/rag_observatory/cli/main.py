@@ -8,6 +8,7 @@ from rag_observatory.evaluation.failure_labels import evaluate_heuristic_failure
 from rag_observatory.evaluation.quality import evaluate_rule_based_quality
 from rag_observatory.io.json import dump_trace, load_trace
 from rag_observatory.reports.comparison import render_markdown_comparison
+from rag_observatory.reports.conversation import render_markdown_conversation_report
 from rag_observatory.reports.failure_label_evaluation import (
     render_markdown_failure_label_evaluation,
 )
@@ -29,6 +30,19 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("after", help="Path to the comparison RAG trace JSON file.")
     compare.add_argument(
         "--output", "-o", help="Output markdown file. Prints to stdout if omitted."
+    )
+
+    conversation_report = subparsers.add_parser(
+        "conversation-report",
+        help="Render a markdown diagnostic report across conversational RAG turns.",
+    )
+    conversation_report.add_argument(
+        "traces", nargs="+", help="Paths to per-turn RAG trace JSON files."
+    )
+    conversation_report.add_argument(
+        "--output",
+        "-o",
+        help="Output markdown file. Prints to stdout if omitted.",
     )
 
     evaluate_labels = subparsers.add_parser(
@@ -85,6 +99,12 @@ def main(argv: list[str] | None = None) -> int:
         after = load_trace(args.after)
         comparison = render_markdown_comparison(before, after)
         _write_or_print(comparison, args.output)
+        return 0
+
+    if args.command == "conversation-report":
+        traces = [load_trace(trace_path) for trace_path in args.traces]
+        report = render_markdown_conversation_report(traces)
+        _write_or_print(report, args.output)
         return 0
 
     if args.command == "evaluate-labels":

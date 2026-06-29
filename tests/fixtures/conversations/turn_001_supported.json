@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "run_id": "synthetic-conversation-turn-001",
+    "timestamp": "2026-06-29T00:00:00Z",
+    "dataset": "synthetic_conversational_rag",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "conversation": {
+    "conversation_id": "conv-penicillin",
+    "turn_id": "turn-001",
+    "turn_index": 1,
+    "original_turn_text": "Who discovered penicillin?",
+    "standalone_query": "Who discovered penicillin?",
+    "prior_turn_references": [],
+    "answerability": "answerable"
+  },
+  "query": {
+    "query_id": "conv-penicillin-q001",
+    "text": "Who discovered penicillin?",
+    "gold_answer": "Alexander Fleming discovered penicillin."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-penicillin",
+      "title": "Penicillin",
+      "text": "Alexander Fleming discovered penicillin in 1928.",
+      "score": 1.0,
+      "rank": 1,
+      "is_relevant": true
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-penicillin",
+      "doc_id": "doc-penicillin",
+      "text": "Alexander Fleming discovered penicillin in 1928.",
+      "rank": 1,
+      "token_count": 6
+    }
+  ],
+  "answer": {
+    "text": "Alexander Fleming discovered penicillin.",
+    "citations": [
+      {
+        "doc_id": "doc-penicillin",
+        "quote": "Alexander Fleming discovered penicillin in 1928."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "faithfulness",
+      "value": 1.0,
+      "passed": true,
+      "threshold": 0.8
+    },
+    {
+      "name": "answer_relevance",
+      "value": 1.0,
+      "passed": true,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "conversation",
+      "note": "Opening turn is standalone and answerable."
+    }
+  ]
+}

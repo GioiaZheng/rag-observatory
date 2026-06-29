@@ -71,6 +71,19 @@ $env:PYTHONPATH = "src"
 python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
 ```
 
+Render a conversational report from per-turn traces:
+
+```bash
+PYTHONPATH=src python -m rag_observatory.cli.main conversation-report tests/fixtures/conversations/turn_001_supported.json tests/fixtures/conversations/turn_002_bad_rewrite.json tests/fixtures/conversations/turn_003_unanswerable.json --output outputs/reports/conversation.md
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m rag_observatory.cli.main conversation-report tests/fixtures/conversations/turn_001_supported.json tests/fixtures/conversations/turn_002_bad_rewrite.json tests/fixtures/conversations/turn_003_unanswerable.json --output outputs/reports/conversation.md
+```
+
 Convert a synthetic `msmarco-genqa` export into a RAG trace:
 
 ```bash
