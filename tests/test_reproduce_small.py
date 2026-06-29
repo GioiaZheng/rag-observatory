@@ -36,6 +36,7 @@ class ReproduceSmallTests(unittest.TestCase):
             trace_path = output_dir / "traces" / "msmarco_genqa_trace.json"
             markdown_path = output_dir / "reports" / "msmarco_genqa_diagnostic.md"
             html_path = output_dir / "reports" / "msmarco_genqa_diagnostic.html"
+            screenshot_path = output_dir / "reports" / "msmarco_genqa_diagnostic.svg"
             comparison_path = output_dir / "reports" / "benchmark_comparison.md"
             manifest_path = output_dir / "manifest.json"
 
@@ -43,6 +44,7 @@ class ReproduceSmallTests(unittest.TestCase):
                 trace_path,
                 markdown_path,
                 html_path,
+                screenshot_path,
                 comparison_path,
                 manifest_path,
             ):
@@ -62,6 +64,11 @@ class ReproduceSmallTests(unittest.TestCase):
             html = html_path.read_text(encoding="utf-8")
             self.assertIn("<!doctype html>", html)
             self.assertIn("RAG Diagnostic Report", html)
+            self.assertIn("Failure Modes", html)
+
+            screenshot = screenshot_path.read_text(encoding="utf-8")
+            self.assertIn("<svg", screenshot)
+            self.assertIn("RAG Diagnostic Report", screenshot)
 
             comparison = comparison_path.read_text(encoding="utf-8")
             self.assertIn("# RAG Trace Comparison", comparison)
@@ -71,6 +78,7 @@ class ReproduceSmallTests(unittest.TestCase):
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             self.assertEqual("rag-observatory.reproduce-small.v1", manifest["format"])
             self.assertIn("html_report", manifest["artifacts"])
+            self.assertIn("screenshot_svg", manifest["artifacts"])
             self.assertIn("reranking_error", manifest["failure_modes"])
 
 

@@ -36,8 +36,8 @@ python scripts/reproduce_small.py --output-dir outputs/reproduce-small
 ```
 
 This writes a normalized trace, Markdown report, HTML report, benchmark
-comparison, and manifest under `outputs/reproduce-small/`. The workflow is
-documented in [`docs/reproduce_small.md`](docs/reproduce_small.md).
+comparison, screenshot preview, and manifest under `outputs/reproduce-small/`.
+The workflow is documented in [`docs/reproduce_small.md`](docs/reproduce_small.md).
 
 Run the tests:
 
@@ -72,6 +72,12 @@ After installation, the same command is available as:
 
 ```bash
 rag-observe report tests/fixtures/toy_runs/unsupported_answer.json --output outputs/reports/unsupported_answer.md
+```
+
+Render an HTML diagnostic report and SVG preview:
+
+```bash
+PYTHONPATH=src python -m rag_observatory.cli.main html-report tests/fixtures/stage_contract/full_observability_trace.json --output outputs/reports/full_observability.html --screenshot outputs/reports/full_observability.svg
 ```
 
 Compare two traces for the same query:
@@ -154,6 +160,9 @@ A public-safe synthetic example of the rendered report shape is checked in at
 [`docs/examples/synthetic_diagnostic_report.md`](docs/examples/synthetic_diagnostic_report.md).
 Generated run outputs should still be written outside the committed tree, such
 as under an ignored `outputs/` directory.
+
+HTML report artifacts and screenshot previews are documented in
+[`docs/report_artifacts.md`](docs/report_artifacts.md).
 
 For dataset-scale trace parsing, keep individual traces inspectable and use the
 streaming JSONL collection format documented in

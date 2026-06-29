@@ -12,6 +12,7 @@ from rag_observatory.reports.conversation import render_markdown_conversation_re
 from rag_observatory.reports.failure_label_evaluation import (
     render_markdown_failure_label_evaluation,
 )
+from rag_observatory.reports.html import render_html_report, render_report_screenshot_svg
 from rag_observatory.reports.markdown import render_markdown_report
 from rag_observatory.reports.quality import render_markdown_quality_evaluation
 from rag_observatory.taxonomy.failure_modes import classify_trace
@@ -24,6 +25,16 @@ def build_parser() -> argparse.ArgumentParser:
     report = subparsers.add_parser("report", help="Render a markdown diagnostic report.")
     report.add_argument("trace", help="Path to a RAG trace JSON file.")
     report.add_argument("--output", "-o", help="Output markdown file. Prints to stdout if omitted.")
+
+    html_report = subparsers.add_parser("html-report", help="Render an HTML diagnostic report.")
+    html_report.add_argument("trace", help="Path to a RAG trace JSON file.")
+    html_report.add_argument(
+        "--output", "-o", help="Output HTML file. Prints to stdout if omitted."
+    )
+    html_report.add_argument(
+        "--screenshot",
+        help="Optional output SVG preview file for documentation and CI checks.",
+    )
 
     compare = subparsers.add_parser("compare", help="Render a markdown trace comparison.")
     compare.add_argument("before", help="Path to the baseline RAG trace JSON file.")
@@ -92,6 +103,18 @@ def main(argv: list[str] | None = None) -> int:
         labels = classify_trace(trace)
         report = render_markdown_report(trace, failure_labels=labels)
         _write_or_print(report, args.output)
+        return 0
+
+    if args.command == "html-report":
+        trace = load_trace(args.trace)
+        labels = classify_trace(trace)
+        report = render_html_report(trace, failure_labels=labels)
+        _write_or_print(report, args.output)
+        if args.screenshot:
+            _write_or_print(
+                render_report_screenshot_svg(trace, failure_labels=labels),
+                args.screenshot,
+            )
         return 0
 
     if args.command == "compare":
