@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "run_id": "stage-contract-full-observability",
+    "timestamp": "2026-06-29T00:00:00Z",
+    "dataset": "synthetic-stage-contract",
+    "config_hash": "stage-contract-v1",
+    "code_version": "fixture",
+    "retriever": "synthetic-bm25",
+    "reranker": "synthetic-cross-encoder",
+    "generator": "synthetic-generator",
+    "evaluator": "rule-based-review",
+    "random_seed": 17,
+    "pipeline_stages": {
+      "retrieval": true,
+      "reranking": true,
+      "context_selection": true,
+      "prompt": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "stage-q001",
+    "text": "How do beta blockers lower blood pressure?",
+    "gold_answer": "They lower blood pressure mainly by slowing heart rate and reducing cardiac workload."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "retrieved-doc-beta-blockers",
+      "title": "Beta blockers",
+      "source": "synthetic-corpus",
+      "text": "Beta blockers lower blood pressure by slowing heart rate and reducing the force of contraction.",
+      "score": 0.91,
+      "rank": 1,
+      "is_relevant": true
+    },
+    {
+      "doc_id": "retrieved-doc-calcium-channel-blockers",
+      "title": "Calcium channel blockers",
+      "source": "synthetic-corpus",
+      "text": "Calcium channel blockers relax blood vessel muscles by limiting calcium entry into cells.",
+      "score": 0.74,
+      "rank": 2,
+      "is_relevant": false
+    }
+  ],
+  "reranked_documents": [
+    {
+      "doc_id": "reranked-doc-calcium-channel-blockers",
+      "title": "Calcium channel blockers",
+      "source": "synthetic-corpus",
+      "text": "Calcium channel blockers relax blood vessel muscles by limiting calcium entry into cells.",
+      "score": 0.88,
+      "rank": 1,
+      "is_relevant": false
+    },
+    {
+      "doc_id": "reranked-doc-beta-blockers",
+      "title": "Beta blockers",
+      "source": "synthetic-corpus",
+      "text": "Beta blockers lower blood pressure by slowing heart rate and reducing the force of contraction.",
+      "score": 0.77,
+      "rank": 2,
+      "is_relevant": true
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-calcium-channel-blockers",
+      "doc_id": "reranked-doc-calcium-channel-blockers",
+      "text": "Calcium channel blockers relax blood vessel muscles by limiting calcium entry into cells.",
+      "rank": 1,
+      "token_count": 12,
+      "extra": {
+        "source_stage": "reranking"
+      }
+    }
+  ],
+  "prompt": {
+    "template_id": "stage-contract-rag-answer-v1",
+    "content": "Answer the question using only the selected context and cite the supporting document.",
+    "variables": {
+      "question": "How do beta blockers lower blood pressure?",
+      "context_count": 1
+    }
+  },
+  "answer": {
+    "text": "Beta blockers lower blood pressure by relaxing blood vessel muscles directly.",
+    "citations": [
+      {
+        "doc_id": "reranked-doc-calcium-channel-blockers",
+        "quote": "Calcium channel blockers relax blood vessel muscles."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "context_relevance",
+      "value": 0.2,
+      "passed": false,
+      "threshold": 0.8,
+      "notes": "The selected context describes a different medication class."
+    },
+    {
+      "name": "faithfulness",
+      "value": 0.45,
+      "passed": false,
+      "threshold": 0.8,
+      "notes": "The answer transfers evidence about calcium channel blockers to beta blockers."
+    },
+    {
+      "name": "answer_relevance",
+      "value": 0.86,
+      "passed": true,
+      "threshold": 0.8,
+      "notes": "The answer addresses the question shape but is not grounded."
+    }
+  ],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "reranking",
+      "note": "The reranker promoted the irrelevant calcium-channel-blocker document above the relevant beta-blocker document."
+    },
+    {
+      "stage": "generation",
+      "note": "The answer borrows a mechanism from the selected context but applies it to the queried medication class."
+    }
+  ]
+}
