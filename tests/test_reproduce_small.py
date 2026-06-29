@@ -38,6 +38,7 @@ class ReproduceSmallTests(unittest.TestCase):
             html_path = output_dir / "reports" / "msmarco_genqa_diagnostic.html"
             screenshot_path = output_dir / "reports" / "msmarco_genqa_diagnostic.svg"
             comparison_path = output_dir / "reports" / "benchmark_comparison.md"
+            benchmark_path = output_dir / "reports" / "failure_pattern_benchmark.md"
             manifest_path = output_dir / "manifest.json"
 
             for path in (
@@ -46,6 +47,7 @@ class ReproduceSmallTests(unittest.TestCase):
                 html_path,
                 screenshot_path,
                 comparison_path,
+                benchmark_path,
                 manifest_path,
             ):
                 self.assertTrue(path.is_file(), f"missing artifact: {path}")
@@ -75,10 +77,16 @@ class ReproduceSmallTests(unittest.TestCase):
             self.assertIn("small-comparison-baseline", comparison)
             self.assertIn("small-comparison-reranked", comparison)
 
+            benchmark = benchmark_path.read_text(encoding="utf-8")
+            self.assertIn("# Failure-Pattern Benchmark Summary", benchmark)
+            self.assertIn("baseline", benchmark)
+            self.assertIn("reranked", benchmark)
+
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             self.assertEqual("rag-observatory.reproduce-small.v1", manifest["format"])
             self.assertIn("html_report", manifest["artifacts"])
             self.assertIn("screenshot_svg", manifest["artifacts"])
+            self.assertIn("failure_pattern_benchmark", manifest["artifacts"])
             self.assertIn("reranking_error", manifest["failure_modes"])
 
 

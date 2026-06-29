@@ -11,7 +11,8 @@ diagnostic loop:
    schema.
 2. Render a Markdown and HTML diagnostic report.
 3. Compare two small pipeline variants.
-4. Write a manifest that records the produced artifacts.
+4. Summarize failure patterns across those variants.
+5. Write a manifest that records the produced artifacts.
 
 Run it from the repository root:
 

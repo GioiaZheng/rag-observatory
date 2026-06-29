@@ -4,9 +4,11 @@ import argparse
 from pathlib import Path
 
 from rag_observatory.adapters.msmarco_genqa import load_msmarco_genqa_trace
+from rag_observatory.benchmark.failure_patterns import load_failure_pattern_benchmark
 from rag_observatory.evaluation.failure_labels import evaluate_heuristic_failure_labels
 from rag_observatory.evaluation.quality import evaluate_rule_based_quality
 from rag_observatory.io.json import dump_trace, load_trace
+from rag_observatory.reports.benchmark import render_markdown_failure_pattern_benchmark
 from rag_observatory.reports.comparison import render_markdown_comparison
 from rag_observatory.reports.conversation import render_markdown_conversation_report
 from rag_observatory.reports.failure_label_evaluation import (
@@ -41,6 +43,20 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("after", help="Path to the comparison RAG trace JSON file.")
     compare.add_argument(
         "--output", "-o", help="Output markdown file. Prints to stdout if omitted."
+    )
+
+    benchmark_summary = subparsers.add_parser(
+        "benchmark-summary",
+        help="Render a markdown failure-pattern benchmark summary.",
+    )
+    benchmark_summary.add_argument(
+        "manifest",
+        help="Path to a small failure-pattern benchmark manifest.",
+    )
+    benchmark_summary.add_argument(
+        "--output",
+        "-o",
+        help="Output markdown file. Prints to stdout if omitted.",
     )
 
     conversation_report = subparsers.add_parser(
@@ -122,6 +138,12 @@ def main(argv: list[str] | None = None) -> int:
         after = load_trace(args.after)
         comparison = render_markdown_comparison(before, after)
         _write_or_print(comparison, args.output)
+        return 0
+
+    if args.command == "benchmark-summary":
+        summary = load_failure_pattern_benchmark(args.manifest)
+        report = render_markdown_failure_pattern_benchmark(summary)
+        _write_or_print(report, args.output)
         return 0
 
     if args.command == "conversation-report":

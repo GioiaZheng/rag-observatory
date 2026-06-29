@@ -52,6 +52,12 @@ def main(argv: list[str] | None = None) -> int:
     comparison_markdown = modules["render_markdown_comparison"](baseline, reranked)
     paths["comparison_markdown"].write_text(comparison_markdown, encoding="utf-8")
 
+    benchmark_summary = modules["load_failure_pattern_benchmark"](
+        EXAMPLE_DIR / "benchmark_variants.json"
+    )
+    benchmark_markdown = modules["render_markdown_failure_pattern_benchmark"](benchmark_summary)
+    paths["benchmark_summary"].write_text(benchmark_markdown, encoding="utf-8")
+
     manifest = _manifest(output_dir, paths, labels)
     paths["manifest"].write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -64,7 +70,9 @@ def main(argv: list[str] | None = None) -> int:
 def _load_modules() -> dict[str, Any]:
     sys.path.insert(0, str(ROOT / "src"))
     from rag_observatory.adapters.msmarco_genqa import load_msmarco_genqa_trace
+    from rag_observatory.benchmark.failure_patterns import load_failure_pattern_benchmark
     from rag_observatory.io.json import dump_trace, load_trace
+    from rag_observatory.reports.benchmark import render_markdown_failure_pattern_benchmark
     from rag_observatory.reports.comparison import render_markdown_comparison
     from rag_observatory.reports.html import render_html_report, render_report_screenshot_svg
     from rag_observatory.reports.markdown import render_markdown_report
@@ -74,7 +82,9 @@ def _load_modules() -> dict[str, Any]:
         "classify_trace": classify_trace,
         "dump_trace": dump_trace,
         "load_msmarco_genqa_trace": load_msmarco_genqa_trace,
+        "load_failure_pattern_benchmark": load_failure_pattern_benchmark,
         "load_trace": load_trace,
+        "render_markdown_failure_pattern_benchmark": render_markdown_failure_pattern_benchmark,
         "render_markdown_comparison": render_markdown_comparison,
         "render_markdown_report": render_markdown_report,
         "render_html_report": render_html_report,
@@ -89,6 +99,7 @@ def _output_paths(output_dir: Path) -> dict[str, Path]:
         "diagnostic_html": output_dir / "reports" / "msmarco_genqa_diagnostic.html",
         "diagnostic_screenshot": output_dir / "reports" / "msmarco_genqa_diagnostic.svg",
         "comparison_markdown": output_dir / "reports" / "benchmark_comparison.md",
+        "benchmark_summary": output_dir / "reports" / "failure_pattern_benchmark.md",
         "manifest": output_dir / "manifest.json",
     }
 
@@ -101,6 +112,7 @@ def _manifest(output_dir: Path, paths: dict[str, Path], labels: list[Any]) -> di
             "msmarco_genqa_export": _relative(EXAMPLE_DIR / "msmarco_genqa_export.json", ROOT),
             "comparison_baseline": _relative(EXAMPLE_DIR / "comparison_baseline.json", ROOT),
             "comparison_reranked": _relative(EXAMPLE_DIR / "comparison_reranked.json", ROOT),
+            "benchmark_manifest": _relative(EXAMPLE_DIR / "benchmark_variants.json", ROOT),
         },
         "artifacts": {
             "trace_schema_json": _relative(paths["trace"], output_dir),
@@ -108,6 +120,7 @@ def _manifest(output_dir: Path, paths: dict[str, Path], labels: list[Any]) -> di
             "html_report": _relative(paths["diagnostic_html"], output_dir),
             "screenshot_svg": _relative(paths["diagnostic_screenshot"], output_dir),
             "benchmark_comparison": _relative(paths["comparison_markdown"], output_dir),
+            "failure_pattern_benchmark": _relative(paths["benchmark_summary"], output_dir),
         },
         "failure_modes": sorted({label.mode for label in labels}),
         "taxonomy_reference": "failure_taxonomy/README.md",
