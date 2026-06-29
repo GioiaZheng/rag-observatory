@@ -1,6 +1,8 @@
 from rag_observatory.trace.schema import (
     Answer,
     Citation,
+    ClaimDiagnosis,
+    ClaimEvidenceRef,
     ContextChunk,
     ConversationTurn,
     DiagnosticNote,
@@ -18,6 +20,8 @@ from rag_observatory.trace.validation import validate_trace
 __all__ = [
     "Answer",
     "Citation",
+    "ClaimDiagnosis",
+    "ClaimEvidenceRef",
     "ContextChunk",
     "ConversationTurn",
     "DiagnosticNote",

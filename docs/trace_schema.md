@@ -16,6 +16,7 @@ Optional top-level fields:
 - `reranked_documents`
 - `prompt`
 - `metrics`
+- `claims`
 - `failures`
 - `diagnostic_notes`
 - `extra`
@@ -61,6 +62,8 @@ This is the smallest shape accepted by the current schema:
 - `prompt` records prompt content or a prompt template ID.
 - `answer` records generated text and optional citations.
 - `metrics` records evaluator outputs and pass/fail status.
+- `claims` records optional claim-level support and attribution diagnoses for
+  generated answer claims.
 - `failures` records manual or heuristic failure labels.
 - `diagnostic_notes` records compact human notes by stage.
 
@@ -204,3 +207,19 @@ and failure labels local to the turn that produced them.
 conversation report can group multiple per-turn traces and distinguish
 retrieval failures associated with query rewriting from failures caused by
 insufficient evidence for unanswerable turns.
+
+## Claim-Level Diagnosis
+
+`claims` is an optional list of externally reviewed or adapter-provided claim
+diagnoses. It is not produced by the schema itself. Each claim records claim
+text, optional answer span offsets, evidence references, a support label,
+failure attribution category, optional confidence, reviewer source, and
+diagnostic notes.
+
+Evidence references must include `doc_id` or `context_id` when present, and any
+referenced IDs must exist in `retrieved_documents`, `reranked_documents`, or
+`selected_context`. Claims labeled `insufficient_evidence` may use an empty
+evidence list.
+
+The detailed contract is documented in
+[`docs/claim_level_diagnosis.md`](claim_level_diagnosis.md).

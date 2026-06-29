@@ -423,6 +423,150 @@ class Citation:
 
 
 @dataclass(frozen=True)
+class ClaimEvidenceRef:
+    doc_id: str | None = None
+    context_id: str | None = None
+    quote: str | None = None
+    span_start: int | None = None
+    span_end: int | None = None
+    extra: JsonObject = field(default_factory=dict)
+
+    @classmethod
+    def from_dict(cls, value: Any) -> ClaimEvidenceRef:
+        data = _expect_mapping(value, "claim_evidence")
+        _reject_unknown(
+            data,
+            {"doc_id", "context_id", "quote", "span_start", "span_end", "extra"},
+            "claim_evidence",
+        )
+        doc_id = _optional_str(data, "doc_id", "claim_evidence")
+        context_id = _optional_str(data, "context_id", "claim_evidence")
+        if doc_id is None and context_id is None:
+            raise TraceValidationError("claim evidence reference must include doc_id or context_id")
+        span_start = _optional_int(data, "span_start", "claim_evidence")
+        span_end = _optional_int(data, "span_end", "claim_evidence")
+        if span_start is not None and span_end is not None and span_start > span_end:
+            raise TraceValidationError("claim_evidence span is invalid")
+        return cls(
+            doc_id=doc_id,
+            context_id=context_id,
+            quote=_optional_str(data, "quote", "claim_evidence"),
+            span_start=span_start,
+            span_end=span_end,
+            extra=_optional_object(data, "extra", "claim_evidence"),
+        )
+
+    def to_dict(self) -> JsonObject:
+        return {
+            "doc_id": self.doc_id,
+            "context_id": self.context_id,
+            "quote": self.quote,
+            "span_start": self.span_start,
+            "span_end": self.span_end,
+            "extra": dict(self.extra),
+        }
+
+
+@dataclass(frozen=True)
+class ClaimDiagnosis:
+    claim_id: str
+    text: str
+    support_label: str
+    failure_category: str = "unknown"
+    answer_span_start: int | None = None
+    answer_span_end: int | None = None
+    evidence: list[ClaimEvidenceRef] = field(default_factory=list)
+    confidence: float | None = None
+    reviewer_source: str | None = None
+    diagnostic_notes: list[str] = field(default_factory=list)
+    extra: JsonObject = field(default_factory=dict)
+
+    @classmethod
+    def from_dict(cls, value: Any) -> ClaimDiagnosis:
+        data = _expect_mapping(value, "claim")
+        _reject_unknown(
+            data,
+            {
+                "claim_id",
+                "text",
+                "support_label",
+                "failure_category",
+                "answer_span_start",
+                "answer_span_end",
+                "evidence",
+                "confidence",
+                "reviewer_source",
+                "diagnostic_notes",
+                "extra",
+            },
+            "claim",
+        )
+        support_label = _required_str(data, "support_label", "claim")
+        if support_label not in {
+            "supported",
+            "partially_supported",
+            "contradicted",
+            "insufficient_evidence",
+            "unsupported",
+            "unreviewed",
+        }:
+            raise TraceValidationError(f"unknown claim support label: {support_label}")
+
+        failure_category = _optional_str(data, "failure_category", "claim") or "unknown"
+        if failure_category not in {
+            "none",
+            "retrieval",
+            "evidence_selection",
+            "answer_construction",
+            "evaluation",
+            "unknown",
+        }:
+            raise TraceValidationError(f"unknown claim failure category: {failure_category}")
+
+        answer_span_start = _optional_int(data, "answer_span_start", "claim")
+        answer_span_end = _optional_int(data, "answer_span_end", "claim")
+        if (
+            answer_span_start is not None
+            and answer_span_end is not None
+            and answer_span_start > answer_span_end
+        ):
+            raise TraceValidationError("claim answer span is invalid")
+
+        confidence = _optional_float(data, "confidence", "claim")
+        if confidence is not None and not 0 <= confidence <= 1:
+            raise TraceValidationError("claim.confidence must be between 0 and 1")
+
+        return cls(
+            claim_id=_required_str(data, "claim_id", "claim"),
+            text=_required_str(data, "text", "claim"),
+            support_label=support_label,
+            failure_category=failure_category,
+            answer_span_start=answer_span_start,
+            answer_span_end=answer_span_end,
+            evidence=_list_from(data, "evidence", "claim", ClaimEvidenceRef.from_dict),
+            confidence=confidence,
+            reviewer_source=_optional_str(data, "reviewer_source", "claim"),
+            diagnostic_notes=_optional_str_list(data, "diagnostic_notes", "claim"),
+            extra=_optional_object(data, "extra", "claim"),
+        )
+
+    def to_dict(self) -> JsonObject:
+        return {
+            "claim_id": self.claim_id,
+            "text": self.text,
+            "support_label": self.support_label,
+            "failure_category": self.failure_category,
+            "answer_span_start": self.answer_span_start,
+            "answer_span_end": self.answer_span_end,
+            "evidence": [evidence.to_dict() for evidence in self.evidence],
+            "confidence": self.confidence,
+            "reviewer_source": self.reviewer_source,
+            "diagnostic_notes": list(self.diagnostic_notes),
+            "extra": dict(self.extra),
+        }
+
+
+@dataclass(frozen=True)
 class Answer:
     text: str
     citations: list[Citation] = field(default_factory=list)
@@ -555,6 +699,7 @@ class RagTrace:
     reranked_documents: list[Document] = field(default_factory=list)
     prompt: Prompt | None = None
     metrics: list[Metric] = field(default_factory=list)
+    claims: list[ClaimDiagnosis] = field(default_factory=list)
     failures: list[FailureLabel] = field(default_factory=list)
     diagnostic_notes: list[DiagnosticNote] = field(default_factory=list)
     extra: JsonObject = field(default_factory=dict)
@@ -574,6 +719,7 @@ class RagTrace:
                 "prompt",
                 "answer",
                 "metrics",
+                "claims",
                 "failures",
                 "diagnostic_notes",
                 "extra",
@@ -599,6 +745,7 @@ class RagTrace:
             prompt=Prompt.from_dict(prompt) if prompt is not None else None,
             answer=Answer.from_dict(data["answer"]),
             metrics=_list_from(data, "metrics", "trace", Metric.from_dict),
+            claims=_list_from(data, "claims", "trace", ClaimDiagnosis.from_dict),
             failures=_list_from(data, "failures", "trace", FailureLabel.from_dict),
             diagnostic_notes=_list_from(
                 data, "diagnostic_notes", "trace", DiagnosticNote.from_dict
@@ -630,6 +777,7 @@ class RagTrace:
             "prompt": self.prompt.to_dict() if self.prompt is not None else None,
             "answer": self.answer.to_dict(),
             "metrics": [metric.to_dict() for metric in self.metrics],
+            "claims": [claim.to_dict() for claim in self.claims],
             "failures": [failure.to_dict() for failure in self.failures],
             "diagnostic_notes": [note.to_dict() for note in self.diagnostic_notes],
             "extra": dict(self.extra),

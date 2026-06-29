@@ -127,6 +127,9 @@ The evaluator protocol for context relevance, faithfulness, answer relevance,
 provenance, and abstention is documented in
 [`docs/evaluator_protocol.md`](docs/evaluator_protocol.md).
 
+Claim-level answer support and attribution diagnosis is documented in
+[`docs/claim_level_diagnosis.md`](docs/claim_level_diagnosis.md).
+
 A public-safe synthetic example of the rendered report shape is checked in at
 [`docs/examples/synthetic_diagnostic_report.md`](docs/examples/synthetic_diagnostic_report.md).
 Generated run outputs should still be written outside the committed tree, such

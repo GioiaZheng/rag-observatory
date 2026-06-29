@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "run_id": "synthetic-claim-attribution",
+    "timestamp": "2026-06-29T00:00:00Z",
+    "dataset": "synthetic_claim_review",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "evaluator": "human-review",
+    "pipeline_stages": {
+      "retrieval": true,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    }
+  },
+  "query": {
+    "query_id": "claim-review-q001",
+    "text": "Summarize the discovery of penicillin.",
+    "gold_answer": "Alexander Fleming discovered penicillin in 1928."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-penicillin",
+      "title": "Penicillin discovery",
+      "text": "Alexander Fleming discovered penicillin in 1928. Later researchers helped develop it into a medicine.",
+      "score": 1.0,
+      "rank": 1,
+      "is_relevant": true
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-penicillin",
+      "doc_id": "doc-penicillin",
+      "text": "Alexander Fleming discovered penicillin in 1928. Later researchers helped develop it into a medicine.",
+      "rank": 1,
+      "token_count": 14
+    }
+  ],
+  "answer": {
+    "text": "Alexander Fleming discovered penicillin in 1928, immediately mass-produced it, and Howard Florey discovered penicillin.",
+    "citations": [
+      {
+        "doc_id": "doc-penicillin",
+        "quote": "Alexander Fleming discovered penicillin in 1928."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "faithfulness",
+      "value": 0.25,
+      "passed": false,
+      "threshold": 0.8,
+      "notes": "Only one of four reviewed claims is fully supported."
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim-supported",
+      "text": "Alexander Fleming discovered penicillin.",
+      "answer_span_start": 0,
+      "answer_span_end": 39,
+      "support_label": "supported",
+      "failure_category": "none",
+      "evidence": [
+        {
+          "doc_id": "doc-penicillin",
+          "context_id": "ctx-penicillin",
+          "quote": "Alexander Fleming discovered penicillin in 1928."
+        }
+      ],
+      "confidence": 1.0,
+      "reviewer_source": "synthetic-human-review"
+    },
+    {
+      "claim_id": "claim-partial",
+      "text": "Fleming discovered penicillin in 1928 and immediately mass-produced it.",
+      "answer_span_start": 0,
+      "answer_span_end": 70,
+      "support_label": "partially_supported",
+      "failure_category": "answer_construction",
+      "evidence": [
+        {
+          "doc_id": "doc-penicillin",
+          "context_id": "ctx-penicillin",
+          "quote": "Alexander Fleming discovered penicillin in 1928."
+        }
+      ],
+      "confidence": 0.72,
+      "reviewer_source": "synthetic-human-review",
+      "diagnostic_notes": [
+        "Discovery date is supported; immediate mass production is not supported."
+      ]
+    },
+    {
+      "claim_id": "claim-contradicted",
+      "text": "Howard Florey discovered penicillin.",
+      "support_label": "contradicted",
+      "failure_category": "answer_construction",
+      "evidence": [
+        {
+          "doc_id": "doc-penicillin",
+          "context_id": "ctx-penicillin",
+          "quote": "Alexander Fleming discovered penicillin in 1928."
+        }
+      ],
+      "confidence": 0.91,
+      "reviewer_source": "synthetic-human-review"
+    },
+    {
+      "claim_id": "claim-insufficient-evidence",
+      "text": "Fleming won the Nobel Prize in 1929.",
+      "support_label": "insufficient_evidence",
+      "failure_category": "retrieval",
+      "evidence": [],
+      "confidence": 0.64,
+      "reviewer_source": "synthetic-human-review",
+      "diagnostic_notes": [
+        "No retrieved or selected evidence mentions this claim."
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "mode": "unsupported_answer",
+      "detection_method": "manual",
+      "severity": "high",
+      "evidence": "Reviewed claims include partial support, contradiction, and insufficient evidence.",
+      "rationale": "The answer mixes supported and unsupported claims."
+    }
+  ],
+  "diagnostic_notes": [
+    {
+      "stage": "claim_review",
+      "note": "Synthetic fixture for claim-level attribution contract tests."
+    }
+  ]
+}

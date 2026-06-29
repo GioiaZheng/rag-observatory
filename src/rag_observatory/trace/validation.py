@@ -22,6 +22,7 @@ def validate_trace(trace: RagTrace) -> None:
         errors.append("document ids must be unique across retrieved and reranked documents")
 
     context_ids = [chunk.context_id for chunk in trace.selected_context]
+    unique_context_ids = set(context_ids)
     if len(set(context_ids)) != len(context_ids):
         errors.append("selected context ids must be unique")
 
@@ -37,6 +38,22 @@ def validate_trace(trace: RagTrace) -> None:
         if citation.span_start is not None and citation.span_end is not None:
             if citation.span_start > citation.span_end:
                 errors.append(f"citation span is invalid for doc_id {citation.doc_id}")
+
+    claim_ids = [claim.claim_id for claim in trace.claims]
+    if len(set(claim_ids)) != len(claim_ids):
+        errors.append("claim ids must be unique")
+
+    for claim in trace.claims:
+        for evidence in claim.evidence:
+            if evidence.doc_id is not None and evidence.doc_id not in unique_doc_ids:
+                errors.append(
+                    f"claim {claim.claim_id} evidence references unknown doc_id {evidence.doc_id}"
+                )
+            if evidence.context_id is not None and evidence.context_id not in unique_context_ids:
+                errors.append(
+                    f"claim {claim.claim_id} evidence references unknown context_id "
+                    f"{evidence.context_id}"
+                )
 
     for failure in trace.failures:
         if failure.mode not in FAILURE_MODE_VALUES:
