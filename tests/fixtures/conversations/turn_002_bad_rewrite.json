@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "run_id": "synthetic-conversation-turn-002",
+    "timestamp": "2026-06-29T00:01:00Z",
+    "dataset": "synthetic_conversational_rag",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "query_rewriting": true,
+      "context_selection": true,
+      "generation": true,
+      "citations": false,
+      "evaluation": true
+    }
+  },
+  "conversation": {
+    "conversation_id": "conv-penicillin",
+    "turn_id": "turn-002",
+    "turn_index": 2,
+    "original_turn_text": "When was it discovered?",
+    "standalone_query": "When was insulin discovered?",
+    "prior_turn_references": ["turn-001"],
+    "answerability": "answerable",
+    "extra": {
+      "expected_rewrite": "When was penicillin discovered?"
+    }
+  },
+  "query": {
+    "query_id": "conv-penicillin-q002",
+    "text": "When was insulin discovered?",
+    "gold_answer": "Penicillin was discovered in 1928."
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-insulin",
+      "title": "Insulin",
+      "text": "Insulin was discovered in the early twentieth century.",
+      "score": 0.91,
+      "rank": 1,
+      "is_relevant": false
+    }
+  ],
+  "selected_context": [
+    {
+      "context_id": "ctx-insulin",
+      "doc_id": "doc-insulin",
+      "text": "Insulin was discovered in the early twentieth century.",
+      "rank": 1,
+      "token_count": 8
+    }
+  ],
+  "answer": {
+    "text": "Insulin was discovered in the early twentieth century.",
+    "citations": []
+  },
+  "metrics": [
+    {
+      "name": "query_rewrite_quality",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8,
+      "notes": "The rewrite resolved it to insulin instead of penicillin."
+    },
+    {
+      "name": "answer_correctness",
+      "value": 0.0,
+      "passed": false,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "query_rewriting",
+      "note": "Dependent turn was rewritten to the wrong entity."
+    }
+  ]
+}

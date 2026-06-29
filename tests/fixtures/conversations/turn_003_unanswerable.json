@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "run_id": "synthetic-conversation-turn-003",
+    "timestamp": "2026-06-29T00:02:00Z",
+    "dataset": "synthetic_conversational_rag",
+    "retriever": "toy-bm25",
+    "generator": "toy-generator",
+    "evaluator": "toy-evaluator",
+    "pipeline_stages": {
+      "retrieval": true,
+      "query_rewriting": true,
+      "context_selection": true,
+      "generation": true,
+      "citations": false,
+      "evaluation": true
+    }
+  },
+  "conversation": {
+    "conversation_id": "conv-penicillin",
+    "turn_id": "turn-003",
+    "turn_index": 3,
+    "original_turn_text": "What was Fleming's favorite breakfast cereal?",
+    "standalone_query": "What was Alexander Fleming's favorite breakfast cereal?",
+    "prior_turn_references": ["turn-001"],
+    "answerability": "unanswerable"
+  },
+  "query": {
+    "query_id": "conv-penicillin-q003",
+    "text": "What was Alexander Fleming's favorite breakfast cereal?",
+    "gold_answer": null
+  },
+  "retrieved_documents": [],
+  "selected_context": [],
+  "answer": {
+    "text": "The trace does not contain evidence to answer that question.",
+    "citations": []
+  },
+  "metrics": [
+    {
+      "name": "answerability",
+      "value": "unanswerable",
+      "passed": true,
+      "notes": "No evidence is available for this personal preference question."
+    }
+  ],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "retrieval",
+      "note": "No evidence exists in the synthetic corpus for this unanswerable turn."
+    }
+  ]
+}
