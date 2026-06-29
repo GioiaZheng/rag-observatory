@@ -23,6 +23,22 @@ The first milestone implements the smallest credible observability loop:
 
 ## Quickstart
 
+Run the small end-to-end reproduction workflow:
+
+```bash
+make reproduce-small
+```
+
+If `make` is not available, run the underlying script directly:
+
+```bash
+python scripts/reproduce_small.py --output-dir outputs/reproduce-small
+```
+
+This writes a normalized trace, Markdown report, HTML report, benchmark
+comparison, and manifest under `outputs/reproduce-small/`. The workflow is
+documented in [`docs/reproduce_small.md`](docs/reproduce_small.md).
+
 Run the tests:
 
 ```bash

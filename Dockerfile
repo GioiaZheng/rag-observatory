@@ -12,6 +12,7 @@ COPY pyproject.toml README.md LICENSE ./
 COPY src ./src
 COPY tests ./tests
 COPY docs ./docs
+COPY examples ./examples
 COPY failure_taxonomy ./failure_taxonomy
 COPY scripts ./scripts
 
