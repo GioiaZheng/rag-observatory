@@ -8,7 +8,8 @@ and reproducibility workflows. `rag-observatory` should only ingest selected
 run outputs into trace objects so those runs can be inspected, reported, and
 compared.
 
-This document is a planning note. It does not introduce adapter code.
+This document records the adapter boundary and the first implemented synthetic
+export contract.
 
 ## Observed Source Surfaces
 
@@ -76,18 +77,49 @@ The adapter should not:
   this repository;
 - duplicate `msmarco-genqa` pipeline logic.
 
-## Suggested Future Implementation
+## Implemented Synthetic Export Contract
 
-1. Add a synthetic `msmarco-genqa` export fixture under `tests/fixtures/`.
-2. Implement a mapper from that export object to `RagTrace`.
-3. Validate the trace using the existing schema validation path.
-4. Add a CLI only if the mapper proves stable, for example:
+The first adapter accepts a small JSON export with this top-level shape:
+
+- `format`: fixed value `msmarco-genqa.trace-export.v1`
+- `run`: run metadata mapped to `RagTrace.metadata`
+- `query`: query text and optional reference answer
+- `retrieved_documents`: initial retrieval candidates
+- `reranked_documents`: optional reranked candidates, or `null`
+- `selected_context`: context chunks exposed to generation
+- `prompt`: optional prompt object, or `null`
+- `answer`: generated answer and optional citations
+- `metrics`: optional evaluation signals
+- `failures`: optional explicitly exported labels
+- `diagnostic_notes`: optional source notes
+- `extra`: export-level metadata preserved under `trace.extra`
+
+Missing optional export fields are recorded under
+`trace.extra.msmarco_genqa_adapter.missing_optional_fields` and surfaced as an
+adapter diagnostic note.
+
+The mapper is available through Python:
+
+```python
+from rag_observatory.adapters.msmarco_genqa import load_msmarco_genqa_trace
+
+trace = load_msmarco_genqa_trace("export.json")
+```
+
+And through the CLI:
 
 ```bash
 rag-observe ingest-msmarco-genqa export.json --output trace.json
+rag-observe report trace.json --output report.md
 ```
 
-5. Use the existing report and compare commands on the produced trace.
+## Suggested Future Implementation
+
+1. Keep the synthetic export fixture stable as the adapter contract evolves.
+2. Add a second fixture with reranking and prompt data.
+3. Add a fixture with explicitly exported manual labels.
+4. Use the existing report and compare commands on produced traces.
+5. Add non-toy exports only through DVC or another large-artifact workflow.
 
 ## Validation Expectations
 
