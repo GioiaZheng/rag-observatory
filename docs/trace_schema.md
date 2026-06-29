@@ -70,6 +70,11 @@ This is the smallest shape accepted by the current schema:
 The schema is intentionally small in the first milestone and should evolve only
 with tests.
 
+The stage-level interpretation of these objects is documented in
+[`docs/trace_stage_contract.md`](trace_stage_contract.md). That contract
+explains how retrieval, reranking, context selection, prompt construction,
+generation, and evaluation signals map to failure taxonomy labels.
+
 ## Optional Fields Example
 
 Optional fields should add diagnostic context without turning the trace into a

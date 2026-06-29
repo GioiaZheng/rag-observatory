@@ -143,6 +143,10 @@ The evaluator protocol for context relevance, faithfulness, answer relevance,
 provenance, and abstention is documented in
 [`docs/evaluator_protocol.md`](docs/evaluator_protocol.md).
 
+The stage-level trace contract for retrieval, reranking, prompt construction,
+generation, and evaluation is documented in
+[`docs/trace_stage_contract.md`](docs/trace_stage_contract.md).
+
 Claim-level answer support and attribution diagnosis is documented in
 [`docs/claim_level_diagnosis.md`](docs/claim_level_diagnosis.md).
 

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from rag_observatory.trace.schema import FailureLabel, RagTrace
+    from rag_observatory.trace.schema import Document, FailureLabel, RagTrace
 
 
 FAILURE_MODE_VALUES = {
@@ -63,9 +63,9 @@ FAILURE_MODE_DEFINITIONS: dict[str, FailureModeDefinition] = {
     ),
     "context_truncation": FailureModeDefinition(
         mode="context_truncation",
-        definition="Relevant retrieved evidence was not included in the selected context.",
+        definition="Relevant candidate evidence was not included in the selected context.",
         detection_method="heuristic",
-        minimal_example="A relevant retrieved document exists, but no selected context uses it.",
+        minimal_example="A relevant retrieved or reranked document exists, but no selected context uses it.",
         limitations="Does not prove token-budget pressure without prompt construction metadata.",
     ),
     "context_pollution": FailureModeDefinition(
@@ -184,21 +184,23 @@ def retrieval_noise_label(trace: RagTrace) -> FailureLabel | None:
 
 
 def context_truncation_label(trace: RagTrace) -> FailureLabel | None:
-    relevant_doc_ids = {doc.doc_id for doc in trace.retrieved_documents if doc.is_relevant is True}
+    relevant_doc_ids = {
+        doc.doc_id for doc in _all_candidate_documents(trace) if doc.is_relevant is True
+    }
     selected_doc_ids = {chunk.doc_id for chunk in trace.selected_context}
     if relevant_doc_ids and not (selected_doc_ids & relevant_doc_ids):
         return _heuristic_label(
             "context_truncation",
             "high",
-            "relevant retrieved documents were not selected for context",
-            "Context selection excluded all retrieved evidence marked relevant.",
+            "relevant candidate documents were not selected for context",
+            "Context selection excluded all candidate evidence marked relevant.",
         )
     return None
 
 
 def context_pollution_label(trace: RagTrace) -> FailureLabel | None:
     irrelevant_doc_ids = {
-        doc.doc_id for doc in trace.retrieved_documents if doc.is_relevant is False
+        doc.doc_id for doc in _all_candidate_documents(trace) if doc.is_relevant is False
     }
     selected_doc_ids = {chunk.doc_id for chunk in trace.selected_context}
     if selected_doc_ids & irrelevant_doc_ids:
@@ -272,7 +274,7 @@ def missing_citation_label(trace: RagTrace) -> FailureLabel | None:
 
 def wrong_citation_label(trace: RagTrace) -> FailureLabel | None:
     irrelevant_doc_ids = {
-        doc.doc_id for doc in trace.retrieved_documents if doc.is_relevant is False
+        doc.doc_id for doc in _all_candidate_documents(trace) if doc.is_relevant is False
     }
     cited_irrelevant = [
         citation.doc_id
@@ -300,6 +302,10 @@ HEURISTIC_LABEL_FUNCTIONS: tuple[HeuristicLabelFunction, ...] = (
     missing_citation_label,
     wrong_citation_label,
 )
+
+
+def _all_candidate_documents(trace: RagTrace) -> list[Document]:
+    return [*trace.retrieved_documents, *trace.reranked_documents]
 
 
 def _heuristic_label(
