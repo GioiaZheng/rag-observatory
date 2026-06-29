@@ -3,9 +3,10 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from rag_observatory.adapters.msmarco_genqa import load_msmarco_genqa_trace
 from rag_observatory.evaluation.failure_labels import evaluate_heuristic_failure_labels
 from rag_observatory.evaluation.quality import evaluate_rule_based_quality
-from rag_observatory.io.json import load_trace
+from rag_observatory.io.json import dump_trace, load_trace
 from rag_observatory.reports.comparison import render_markdown_comparison
 from rag_observatory.reports.failure_label_evaluation import (
     render_markdown_failure_label_evaluation,
@@ -58,6 +59,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Output markdown file. Prints to stdout if omitted.",
     )
 
+    ingest_msmarco = subparsers.add_parser(
+        "ingest-msmarco-genqa",
+        help="Convert an msmarco-genqa JSON export into a RAG trace JSON file.",
+    )
+    ingest_msmarco.add_argument("export", help="Path to an msmarco-genqa JSON export.")
+    ingest_msmarco.add_argument("--output", "-o", required=True, help="Output trace JSON file.")
+
     return parser
 
 
@@ -89,6 +97,11 @@ def main(argv: list[str] | None = None) -> int:
         quality_evaluation = evaluate_rule_based_quality(args.expected_scores)
         report = render_markdown_quality_evaluation(quality_evaluation)
         _write_or_print(report, args.output)
+        return 0
+
+    if args.command == "ingest-msmarco-genqa":
+        trace = load_msmarco_genqa_trace(args.export)
+        dump_trace(trace, args.output)
         return 0
 
     parser.error(f"unknown command: {args.command}")

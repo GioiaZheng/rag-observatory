@@ -71,6 +71,19 @@ $env:PYTHONPATH = "src"
 python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
 ```
 
+Convert a synthetic `msmarco-genqa` export into a RAG trace:
+
+```bash
+PYTHONPATH=src python -m rag_observatory.cli.main ingest-msmarco-genqa tests/fixtures/msmarco_genqa/synthetic_export.json --output outputs/traces/msmarco_genqa_trace.json
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m rag_observatory.cli.main ingest-msmarco-genqa tests/fixtures/msmarco_genqa/synthetic_export.json --output outputs/traces/msmarco_genqa_trace.json
+```
+
 Evaluate failure labels against reviewed expected labels:
 
 ```bash

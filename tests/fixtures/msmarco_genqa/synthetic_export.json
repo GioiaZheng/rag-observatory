@@ -1,0 +1,102 @@
+{
+  "format": "msmarco-genqa.trace-export.v1",
+  "run": {
+    "run_id": "synthetic-msmarco-genqa-run-001",
+    "timestamp": "2026-06-29T00:00:00Z",
+    "dataset": "synthetic-msmarco-genqa",
+    "config_hash": "synthetic-config-hash",
+    "code_version": "fixture",
+    "retriever": "synthetic-bm25",
+    "reranker": null,
+    "generator": "synthetic-generator",
+    "evaluator": "synthetic-evaluator",
+    "random_seed": 17,
+    "pipeline_stages": {
+      "retrieval": true,
+      "reranking": false,
+      "context_selection": true,
+      "generation": true,
+      "citations": true,
+      "evaluation": true
+    },
+    "extra": {
+      "source_repository": "msmarco-genqa",
+      "export_profile": "synthetic-unit-test"
+    }
+  },
+  "query": {
+    "query_id": "msmarco-synthetic-q001",
+    "text": "Who discovered penicillin?",
+    "gold_answer": "Alexander Fleming discovered penicillin.",
+    "extra": {
+      "split": "synthetic-dev"
+    }
+  },
+  "retrieved_documents": [
+    {
+      "doc_id": "doc-penicillin",
+      "title": "Penicillin",
+      "source": "synthetic-corpus",
+      "text": "Alexander Fleming discovered penicillin in 1928 after observing mold inhibiting bacterial growth.",
+      "score": 12.4,
+      "rank": 1,
+      "is_relevant": true
+    },
+    {
+      "doc_id": "doc-insulin",
+      "title": "Insulin",
+      "source": "synthetic-corpus",
+      "text": "Frederick Banting and Charles Best contributed to the discovery of insulin.",
+      "score": 3.2,
+      "rank": 2,
+      "is_relevant": false
+    }
+  ],
+  "reranked_documents": null,
+  "selected_context": [
+    {
+      "context_id": "ctx-penicillin",
+      "doc_id": "doc-penicillin",
+      "text": "Alexander Fleming discovered penicillin in 1928.",
+      "rank": 1,
+      "token_count": 6,
+      "extra": {
+        "source_rank": 1
+      }
+    }
+  ],
+  "prompt": null,
+  "answer": {
+    "text": "Alexander Fleming discovered penicillin.",
+    "citations": [
+      {
+        "doc_id": "doc-penicillin",
+        "quote": "Alexander Fleming discovered penicillin in 1928."
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "faithfulness",
+      "value": 1.0,
+      "passed": true,
+      "threshold": 0.8
+    },
+    {
+      "name": "answer_relevance",
+      "value": 0.95,
+      "passed": true,
+      "threshold": 0.8
+    }
+  ],
+  "failures": [],
+  "diagnostic_notes": [
+    {
+      "stage": "export",
+      "note": "Synthetic msmarco-genqa export fixture for adapter tests."
+    }
+  ],
+  "extra": {
+    "export_id": "synthetic-export-001"
+  }
+}
