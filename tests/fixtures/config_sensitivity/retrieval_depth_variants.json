@@ -1,0 +1,81 @@
+{
+  "format": "rag-observatory.config-sensitivity.v1",
+  "comparison_id": "config-sensitivity-retrieval-depth-v1",
+  "dataset": "synthetic-config-sensitivity",
+  "query_id": "config-q001",
+  "fixed_query": "What is the usual first-line antibiotic for uncomplicated strep throat?",
+  "controlled_variable": "retrieval_top_k",
+  "invariant_settings": {
+    "query_rewriting": false,
+    "context_compression": false,
+    "generator": "synthetic-generator",
+    "evaluator": "rule-based-review"
+  },
+  "variants": [
+    {
+      "name": "top_k_1",
+      "config": {
+        "retriever": "synthetic-bm25",
+        "retrieval_top_k": 1,
+        "reranking": false,
+        "context_policy": "top_1"
+      },
+      "trace_summary": {
+        "relevant_doc_rank": 2,
+        "selected_doc_ids": [
+          "doc-viral-sore-throat"
+        ],
+        "supporting_doc_selected": false,
+        "answer_supported": false
+      },
+      "failure_labels": [
+        "retrieval_failure",
+        "missing_evidence",
+        "unsupported_generation"
+      ],
+      "diagnosis": "The supporting evidence is outside the retrieval cutoff, so context selection cannot pass it to generation."
+    },
+    {
+      "name": "top_k_3",
+      "config": {
+        "retriever": "synthetic-bm25",
+        "retrieval_top_k": 3,
+        "reranking": false,
+        "context_policy": "top_2"
+      },
+      "trace_summary": {
+        "relevant_doc_rank": 2,
+        "selected_doc_ids": [
+          "doc-viral-sore-throat",
+          "doc-strep-penicillin"
+        ],
+        "supporting_doc_selected": true,
+        "answer_supported": true
+      },
+      "failure_labels": [
+        "context_pollution"
+      ],
+      "diagnosis": "Increasing retrieval depth recovers the supporting document but still includes a distracting neighboring document."
+    },
+    {
+      "name": "top_k_3_reranked",
+      "config": {
+        "retriever": "synthetic-bm25",
+        "retrieval_top_k": 3,
+        "reranking": true,
+        "context_policy": "top_1"
+      },
+      "trace_summary": {
+        "relevant_doc_rank": 1,
+        "selected_doc_ids": [
+          "doc-strep-penicillin"
+        ],
+        "supporting_doc_selected": true,
+        "answer_supported": true
+      },
+      "failure_labels": [],
+      "diagnosis": "Reranking promotes the supporting document before context selection, removing the observed failure labels for this synthetic query."
+    }
+  ],
+  "interpretation": "This fixture supports configuration-sensitive diagnosis only for the recorded synthetic comparison. It does not claim causal certainty for unobserved systems."
+}
