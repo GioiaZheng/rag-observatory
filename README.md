@@ -228,6 +228,9 @@ Research claims should stay tied to explicit evidence requirements. The current
 system-demonstration evidence agenda is in
 [`docs/research_evidence_plan.md`](docs/research_evidence_plan.md).
 
+A first technical-report draft for trace-based RAG failure analysis is in
+[`docs/reports/2026-07-01-trace-based-rag-failure-analysis.md`](docs/reports/2026-07-01-trace-based-rag-failure-analysis.md).
+
 ## Repository Layout
 
 ```text
