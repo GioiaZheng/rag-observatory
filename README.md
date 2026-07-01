@@ -160,6 +160,9 @@ The stage-level trace contract for retrieval, reranking, prompt construction,
 generation, and evaluation is documented in
 [`docs/trace_stage_contract.md`](docs/trace_stage_contract.md).
 
+The OpenTelemetry-aligned internal run model is documented in
+[`docs/opentelemetry_alignment.md`](docs/opentelemetry_alignment.md).
+
 Claim-level answer support and attribution diagnosis is documented in
 [`docs/claim_level_diagnosis.md`](docs/claim_level_diagnosis.md).
 
@@ -173,6 +176,9 @@ HTML report artifacts and screenshot previews are documented in
 
 Small failure-pattern benchmark comparisons are documented in
 [`docs/benchmark_comparison.md`](docs/benchmark_comparison.md).
+
+Configuration-sensitive failure diagnosis is documented in
+[`docs/config_sensitivity.md`](docs/config_sensitivity.md).
 
 For dataset-scale trace parsing, keep individual traces inspectable and use the
 streaming JSONL collection format documented in

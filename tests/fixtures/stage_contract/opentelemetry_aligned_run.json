@@ -1,0 +1,293 @@
+{
+  "format": "rag-observatory.internal-run.v1",
+  "run_id": "stage-contract-full-observability",
+  "trace_id": "trace-stage-contract-001",
+  "schema_version": "internal-run.v1",
+  "started_at": "2026-06-29T00:00:00Z",
+  "ended_at": "2026-06-29T00:00:03Z",
+  "source_trace_path": "tests/fixtures/stage_contract/full_observability_trace.json",
+  "attributes": {
+    "dataset": "synthetic-stage-contract",
+    "experiment": "stage-contract",
+    "retriever": "synthetic-bm25",
+    "reranker": "synthetic-cross-encoder",
+    "generator": "synthetic-generator",
+    "evaluator": "rule-based-review",
+    "config_hash": "stage-contract-v1"
+  },
+  "spans": [
+    {
+      "span_id": "span-query",
+      "parent_span_id": null,
+      "name": "rag.query",
+      "stage": "query",
+      "started_at": "2026-06-29T00:00:00.000Z",
+      "ended_at": "2026-06-29T00:00:00.020Z",
+      "latency_ms": 20,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "query_id": "stage-q001"
+      },
+      "output": {
+        "standalone_query_ref": "query.text"
+      },
+      "metrics": {},
+      "attributes": {
+        "dataset": "synthetic-stage-contract"
+      },
+      "events": [],
+      "links": []
+    },
+    {
+      "span_id": "span-retrieval",
+      "parent_span_id": "span-query",
+      "name": "rag.retrieval",
+      "stage": "retrieval",
+      "started_at": "2026-06-29T00:00:00.030Z",
+      "ended_at": "2026-06-29T00:00:00.180Z",
+      "latency_ms": 150,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "query_ref": "query.text",
+        "top_k": 2
+      },
+      "output": {
+        "candidate_count": 2,
+        "top_doc_id": "retrieved-doc-beta-blockers",
+        "relevant_doc_count": 1
+      },
+      "metrics": {
+        "recall_at_2": 1.0
+      },
+      "attributes": {
+        "retriever": "synthetic-bm25",
+        "top_k": 2
+      },
+      "events": [
+        {
+          "name": "retrieval_noise_detected",
+          "attributes": {
+            "irrelevant_doc_count": 1
+          }
+        }
+      ],
+      "links": []
+    },
+    {
+      "span_id": "span-reranking",
+      "parent_span_id": "span-retrieval",
+      "name": "rag.reranking",
+      "stage": "reranking",
+      "started_at": "2026-06-29T00:00:00.200Z",
+      "ended_at": "2026-06-29T00:00:00.390Z",
+      "latency_ms": 190,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "candidate_count": 2
+      },
+      "output": {
+        "top_doc_id": "reranked-doc-calcium-channel-blockers",
+        "relevant_doc_rank": 2
+      },
+      "metrics": {
+        "relevant_doc_rank_delta": 1
+      },
+      "attributes": {
+        "reranker": "synthetic-cross-encoder"
+      },
+      "events": [
+        {
+          "name": "useful_evidence_suppressed",
+          "attributes": {
+            "doc_id": "reranked-doc-beta-blockers"
+          }
+        }
+      ],
+      "links": []
+    },
+    {
+      "span_id": "span-context",
+      "parent_span_id": "span-reranking",
+      "name": "rag.context",
+      "stage": "context",
+      "started_at": "2026-06-29T00:00:00.410Z",
+      "ended_at": "2026-06-29T00:00:00.460Z",
+      "latency_ms": 50,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "candidate_source": "reranked_documents",
+        "token_budget": 32
+      },
+      "output": {
+        "selected_doc_ids": [
+          "reranked-doc-calcium-channel-blockers"
+        ],
+        "supporting_doc_selected": false
+      },
+      "metrics": {
+        "evidence_coverage": 0.0
+      },
+      "attributes": {
+        "selection_policy": "top_1"
+      },
+      "events": [
+        {
+          "name": "context_pollution",
+          "attributes": {
+            "doc_id": "reranked-doc-calcium-channel-blockers"
+          }
+        }
+      ],
+      "links": []
+    },
+    {
+      "span_id": "span-prompt",
+      "parent_span_id": "span-context",
+      "name": "rag.prompt",
+      "stage": "prompt",
+      "started_at": "2026-06-29T00:00:00.480Z",
+      "ended_at": "2026-06-29T00:00:00.520Z",
+      "latency_ms": 40,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "template_id": "stage-contract-rag-answer-v1",
+        "context_count": 1
+      },
+      "output": {
+        "prompt_ref": "prompt.content"
+      },
+      "metrics": {
+        "context_count": 1
+      },
+      "attributes": {
+        "template_id": "stage-contract-rag-answer-v1"
+      },
+      "events": [],
+      "links": []
+    },
+    {
+      "span_id": "span-generation",
+      "parent_span_id": "span-prompt",
+      "name": "rag.generation",
+      "stage": "generation",
+      "started_at": "2026-06-29T00:00:00.540Z",
+      "ended_at": "2026-06-29T00:00:02.100Z",
+      "latency_ms": 1560,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "prompt_ref": "prompt.content"
+      },
+      "output": {
+        "answer_ref": "answer.text",
+        "citation_count": 1
+      },
+      "metrics": {
+        "citation_count": 1
+      },
+      "attributes": {
+        "generator": "synthetic-generator"
+      },
+      "events": [
+        {
+          "name": "wrong_citation",
+          "attributes": {
+            "cited_doc_id": "reranked-doc-calcium-channel-blockers"
+          }
+        }
+      ],
+      "links": []
+    },
+    {
+      "span_id": "span-evaluation",
+      "parent_span_id": "span-generation",
+      "name": "rag.evaluation",
+      "stage": "evaluation",
+      "started_at": "2026-06-29T00:00:02.120Z",
+      "ended_at": "2026-06-29T00:00:02.760Z",
+      "latency_ms": 640,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "answer_ref": "answer.text",
+        "context_ref": "selected_context"
+      },
+      "output": {
+        "failed_metric_names": [
+          "context_relevance",
+          "faithfulness"
+        ],
+        "passed_metric_names": [
+          "answer_relevance"
+        ]
+      },
+      "metrics": {
+        "context_relevance": 0.2,
+        "faithfulness": 0.45,
+        "answer_relevance": 0.86
+      },
+      "attributes": {
+        "evaluator": "rule-based-review"
+      },
+      "events": [
+        {
+          "name": "metric_disagreement",
+          "attributes": {
+            "passed_metrics": 1,
+            "failed_metrics": 2
+          }
+        }
+      ],
+      "links": []
+    },
+    {
+      "span_id": "span-diagnostics",
+      "parent_span_id": "span-evaluation",
+      "name": "rag.diagnostics",
+      "stage": "diagnostics",
+      "started_at": "2026-06-29T00:00:02.780Z",
+      "ended_at": "2026-06-29T00:00:03.000Z",
+      "latency_ms": 220,
+      "status": "ok",
+      "error_type": null,
+      "input": {
+        "stage_span_count": 7,
+        "taxonomy": "rag-observatory.failure-modes.v1"
+      },
+      "output": {
+        "failure_labels": [
+          "retrieval_noise",
+          "reranking_error",
+          "context_truncation",
+          "context_pollution",
+          "metric_disagreement",
+          "unsupported_answer",
+          "wrong_citation"
+        ]
+      },
+      "metrics": {
+        "label_count": 7
+      },
+      "attributes": {
+        "diagnostic_mode": "heuristic"
+      },
+      "events": [],
+      "links": [
+        {
+          "span_id": "span-reranking",
+          "reason": "failure_source"
+        },
+        {
+          "span_id": "span-context",
+          "reason": "failure_propagation"
+        }
+      ]
+    }
+  ],
+  "links": []
+}
