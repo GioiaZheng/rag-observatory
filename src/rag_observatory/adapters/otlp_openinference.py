@@ -586,4 +586,3 @@ def _required_integer(value: Any, label: str) -> int:
         except ValueError as exc:
             raise OtlpOpenInferenceAdapterError(f"{label} must be an integer") from exc
     raise OtlpOpenInferenceAdapterError(f"{label} must be an integer")
-

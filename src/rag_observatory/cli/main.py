@@ -201,4 +201,3 @@ def _write_or_print(text: str, output: str | None) -> None:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
