@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 
 from rag_observatory.adapters.msmarco_genqa import load_msmarco_genqa_trace
+from rag_observatory.adapters.otlp_openinference import load_otlp_openinference_trace
 from rag_observatory.benchmark.failure_patterns import load_failure_pattern_benchmark
 from rag_observatory.evaluation.failure_labels import evaluate_heuristic_failure_labels
 from rag_observatory.evaluation.quality import evaluate_rule_based_quality
@@ -107,6 +108,17 @@ def build_parser() -> argparse.ArgumentParser:
     ingest_msmarco.add_argument("export", help="Path to an msmarco-genqa JSON export.")
     ingest_msmarco.add_argument("--output", "-o", required=True, help="Output trace JSON file.")
 
+    ingest_otlp = subparsers.add_parser(
+        "ingest-otlp-openinference",
+        help="Convert an OTLP/HTTP JSON export with OpenInference spans into a RAG trace.",
+    )
+    ingest_otlp.add_argument("export", help="Path to an OTLP/HTTP JSON trace export.")
+    ingest_otlp.add_argument(
+        "--trace-id",
+        help="Trace ID to select when the export contains more than one trace.",
+    )
+    ingest_otlp.add_argument("--output", "-o", required=True, help="Output trace JSON file.")
+
     return parser
 
 
@@ -169,6 +181,11 @@ def main(argv: list[str] | None = None) -> int:
         dump_trace(trace, args.output)
         return 0
 
+    if args.command == "ingest-otlp-openinference":
+        trace = load_otlp_openinference_trace(args.export, trace_id=args.trace_id)
+        dump_trace(trace, args.output)
+        return 0
+
     parser.error(f"unknown command: {args.command}")
     return 2
 
@@ -184,3 +201,4 @@ def _write_or_print(text: str, output: str | None) -> None:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

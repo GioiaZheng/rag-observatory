@@ -29,7 +29,7 @@ chatbot, or framework wrapper.
 | Run comparison | Before/after trace comparisons and failure-pattern summaries |
 | Reporting | Portable Markdown and HTML reports with SVG previews |
 | Evaluation | Reviewed-label and RAG quality-dimension checks |
-| Integration | A narrow `msmarco-genqa` adapter and OpenTelemetry-aligned internal fields |
+| Integration | Narrow `msmarco-genqa` and OTLP/JSON + OpenInference ingestion adapters |
 | Reproducibility | Manifests, public-safe fixtures, CI, Docker, and a one-command small workflow |
 
 ## A concrete diagnosis
@@ -107,6 +107,9 @@ rag-observe conversation-report TURN_1.json TURN_2.json --output conversation.md
 # Convert a public-safe msmarco-genqa export
 rag-observe ingest-msmarco-genqa EXPORT.json --output trace.json
 
+# Convert one OpenInference trace from an OTLP/HTTP JSON export
+rag-observe ingest-otlp-openinference OTLP.json --output trace.json
+
 # Check reviewed failure labels and quality dimensions
 rag-observe evaluate-labels EXPECTED_LABELS.json --output labels.md
 rag-observe evaluate-quality EXPECTED_SCORES.json --output quality.md
@@ -159,6 +162,7 @@ remain reviewable in Git.
 | Evaluator protocol | [docs/evaluator_protocol.md](docs/evaluator_protocol.md) |
 | Claim-level diagnosis | [docs/claim_level_diagnosis.md](docs/claim_level_diagnosis.md) |
 | OpenTelemetry alignment | [docs/opentelemetry_alignment.md](docs/opentelemetry_alignment.md) |
+| OTLP + OpenInference ingestion | [docs/otlp_openinference_ingestion.md](docs/otlp_openinference_ingestion.md) |
 | Report artifacts | [docs/report_artifacts.md](docs/report_artifacts.md) |
 | Benchmark comparison | [docs/benchmark_comparison.md](docs/benchmark_comparison.md) |
 | Configuration sensitivity | [docs/config_sensitivity.md](docs/config_sensitivity.md) |
@@ -195,7 +199,8 @@ Current boundaries:
 - checked-in evidence is small and synthetic, not a leaderboard or
   dataset-scale benchmark;
 - heuristic labels support inspection but are not a learned failure classifier;
-- the toolkit is not yet a production telemetry backend or hosted dashboard;
+- the OTLP/JSON adapter is an offline importer, not a production OTLP receiver,
+  Collector backend, or hosted dashboard;
 - pipeline code belongs here only as a fixture, minimal demo, or narrow adapter.
 
 See the
@@ -217,3 +222,4 @@ pre-commit run --all-files
 ## License
 
 MIT License. See [LICENSE](LICENSE).
+

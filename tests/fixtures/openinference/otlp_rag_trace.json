@@ -1,0 +1,193 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {"stringValue": "synthetic-rag-service"}
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {"name": "openinference.instrumentation.synthetic"},
+          "spans": [
+            {
+              "traceId": "0123456789abcdef0123456789abcdef",
+              "spanId": "0000000000000001",
+              "name": "rag.pipeline",
+              "startTimeUnixNano": "1735689600000000000",
+              "endTimeUnixNano": "1735689600800000000",
+              "attributes": [
+                {
+                  "key": "openinference.span.kind",
+                  "value": {"stringValue": "CHAIN"}
+                },
+                {
+                  "key": "input.value",
+                  "value": {"stringValue": "{\"question\":\"What prevents scurvy?\"}"}
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {"stringValue": "application/json"}
+                },
+                {
+                  "key": "output.value",
+                  "value": {"stringValue": "{\"answer\":\"Vitamin C prevents scurvy.\"}"}
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {"stringValue": "application/json"}
+                }
+              ],
+              "status": {"code": 1}
+            },
+            {
+              "traceId": "0123456789abcdef0123456789abcdef",
+              "spanId": "0000000000000002",
+              "parentSpanId": "0000000000000001",
+              "name": "vector-search",
+              "startTimeUnixNano": "1735689600100000000",
+              "endTimeUnixNano": "1735689600200000000",
+              "attributes": [
+                {
+                  "key": "openinference.span.kind",
+                  "value": {"stringValue": "RETRIEVER"}
+                },
+                {
+                  "key": "input.value",
+                  "value": {"stringValue": "What prevents scurvy?"}
+                },
+                {
+                  "key": "retrieval.documents.0.document.id",
+                  "value": {"stringValue": "doc-vitamin-c"}
+                },
+                {
+                  "key": "retrieval.documents.0.document.content",
+                  "value": {"stringValue": "Vitamin C deficiency causes scurvy."}
+                },
+                {
+                  "key": "retrieval.documents.0.document.score",
+                  "value": {"doubleValue": 0.98}
+                },
+                {
+                  "key": "retrieval.documents.0.document.metadata",
+                  "value": {"stringValue": "{\"source\":\"synthetic-medical-note\"}"}
+                },
+                {
+                  "key": "retrieval.documents.1.document.id",
+                  "value": {"stringValue": "doc-vitamin-d"}
+                },
+                {
+                  "key": "retrieval.documents.1.document.content",
+                  "value": {"stringValue": "Vitamin D supports calcium absorption."}
+                },
+                {
+                  "key": "retrieval.documents.1.document.score",
+                  "value": {"doubleValue": 0.42}
+                }
+              ],
+              "status": {"code": 1}
+            },
+            {
+              "traceId": "0123456789abcdef0123456789abcdef",
+              "spanId": "0000000000000003",
+              "parentSpanId": "0000000000000001",
+              "name": "cross-encoder-rerank",
+              "startTimeUnixNano": "1735689600300000000",
+              "endTimeUnixNano": "1735689600400000000",
+              "attributes": [
+                {
+                  "key": "openinference.span.kind",
+                  "value": {"stringValue": "RERANKER"}
+                },
+                {
+                  "key": "reranker.query",
+                  "value": {"stringValue": "What prevents scurvy?"}
+                },
+                {
+                  "key": "reranker.model_name",
+                  "value": {"stringValue": "synthetic-cross-encoder"}
+                },
+                {
+                  "key": "reranker.output_documents.0.document.id",
+                  "value": {"stringValue": "doc-vitamin-c"}
+                },
+                {
+                  "key": "reranker.output_documents.0.document.content",
+                  "value": {"stringValue": "Vitamin C deficiency causes scurvy."}
+                },
+                {
+                  "key": "reranker.output_documents.0.document.score",
+                  "value": {"doubleValue": 0.995}
+                },
+                {
+                  "key": "reranker.output_documents.1.document.id",
+                  "value": {"stringValue": "doc-vitamin-d"}
+                },
+                {
+                  "key": "reranker.output_documents.1.document.content",
+                  "value": {"stringValue": "Vitamin D supports calcium absorption."}
+                },
+                {
+                  "key": "reranker.output_documents.1.document.score",
+                  "value": {"doubleValue": 0.2}
+                }
+              ],
+              "status": {"code": 1}
+            },
+            {
+              "traceId": "0123456789abcdef0123456789abcdef",
+              "spanId": "0000000000000004",
+              "parentSpanId": "0000000000000001",
+              "name": "chat-completion",
+              "startTimeUnixNano": "1735689600500000000",
+              "endTimeUnixNano": "1735689600700000000",
+              "attributes": [
+                {
+                  "key": "openinference.span.kind",
+                  "value": {"stringValue": "LLM"}
+                },
+                {
+                  "key": "llm.model_name",
+                  "value": {"stringValue": "synthetic-generator"}
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {"stringValue": "user"}
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {"stringValue": "What prevents scurvy?"}
+                },
+                {
+                  "key": "llm.output_messages.0.message.role",
+                  "value": {"stringValue": "assistant"}
+                },
+                {
+                  "key": "llm.output_messages.0.message.content",
+                  "value": {"stringValue": "Vitamin C prevents scurvy."}
+                },
+                {
+                  "key": "llm.token_count.prompt",
+                  "value": {"intValue": "32"}
+                },
+                {
+                  "key": "llm.token_count.completion",
+                  "value": {"intValue": "6"}
+                },
+                {
+                  "key": "llm.token_count.total",
+                  "value": {"intValue": "38"}
+                }
+              ],
+              "status": {"code": 1}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
