@@ -1,10 +1,10 @@
 # OpenTelemetry Alignment
 
-`rag-observatory` should be OpenTelemetry-aligned, not OpenTelemetry-dependent.
-The near-term goal is to make RAG traces look like a stable internal trace
-model with run-level context, stage-level spans, structured metadata, metrics,
-and diagnostic status. A concrete OpenTelemetry SDK or OTLP exporter can come
-later, after the internal model is stable.
+`rag-observatory` is OpenTelemetry-aligned without requiring an OpenTelemetry
+SDK in the core package. The project accepts OTLP/HTTP JSON exports containing
+OpenInference spans through a tested offline adapter, while keeping its stable
+RAG diagnosis schema as the reporting contract. A network receiver or OTLP
+exporter remains a separate production concern.
 
 This keeps the project focused on its research-engineering purpose: explaining
 where and why a RAG run succeeded or failed.
@@ -140,7 +140,21 @@ replacing the JSON trace contract:
 | `answer` / `claims` | `rag.generation` | Track answer references, citations, claim support, and citation errors. |
 | `metrics` / `failures` / `diagnostic_notes` | `rag.evaluation` and `rag.diagnostics` | Separate evaluator scores from cross-stage failure interpretation. |
 
-## Checked Fixture
+## Implemented OTLP/JSON Ingestion
+
+The `ingest-otlp-openinference` command reads the standard OTLP
+`resourceSpans` / `scopeSpans` / `spans` envelope and decodes typed OTLP
+`AnyValue` attributes. It maps OpenInference `RETRIEVER`, `RERANKER`, and `LLM`
+spans into the public trace schema.
+
+The adapter deliberately leaves `selected_context` empty because the
+OpenInference retrieval and reranking document attributes do not prove which
+chunks entered the final prompt. It records that missing observability as a
+diagnostic note instead of inventing context selection. See
+[OTLP + OpenInference Ingestion](otlp_openinference_ingestion.md) for the exact
+mapping and boundaries.
+
+## Checked Fixtures
 
 The synthetic fixture
 [`tests/fixtures/stage_contract/opentelemetry_aligned_run.json`](../tests/fixtures/stage_contract/opentelemetry_aligned_run.json)
@@ -156,16 +170,21 @@ The fixture is used by tests to check that:
 - large text payloads stay out of low-cardinality attributes;
 - stage-local failure signals can be connected to cross-stage diagnostics.
 
+The synthetic OTLP fixture
+[`tests/fixtures/openinference/otlp_rag_trace.json`](../tests/fixtures/openinference/otlp_rag_trace.json)
+checks the actual importer, including OTLP typed values, OpenInference flattened
+document attributes, multi-trace selection, the CLI path, and downstream report
+generation.
+
 ## Migration Path
 
-1. Keep the current trace schema as the accepted public input format.
-2. Add a fixture for the internal run model beside existing stage-contract
-   fixtures.
-3. Add an adapter from the current trace object into the run-plus-spans model.
-4. Teach reports and comparisons to read stage spans where available.
-5. Add CI quality-gate examples using the same model.
-6. Consider an optional OpenTelemetry/OTLP exporter only after the model is
-   stable.
+1. Keep the current trace schema as the stable reporting and diagnosis model.
+2. Maintain the tested OTLP/JSON + OpenInference offline import boundary.
+3. Add explicit context-selection conventions before mapping selected context.
+4. Teach reports and comparisons to retain stage-span provenance where useful.
+5. Add CI quality-gate examples over imported, reviewed traces.
+6. Consider a hardened OTLP/HTTP receiver only after persistence, admission
+   control, redaction, backpressure, and operational ownership are defined.
 
 The SDK/exporter step is intentionally last. The project should first own its
 RAG-specific semantics, then map them outward.
@@ -176,3 +195,4 @@ RAG-specific semantics, then map them outward.
   <https://opentelemetry.io/docs/concepts/signals/traces/>
 - OpenTelemetry GenAI semantic conventions:
   <https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai>
+
