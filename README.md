@@ -1,255 +1,218 @@
 # rag-observatory
 
 [![tests](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml/badge.svg)](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
-`rag-observatory` is a research-engineering toolkit for understanding and
-diagnosing Retrieval-Augmented Generation systems through traceability, failure
-taxonomy, evidence analysis, and reproducible reports.
+**Trace-based observability and failure analysis for Retrieval-Augmented Generation.**
 
-The project is not a RAG pipeline. Its central object is a RAG execution trace:
-query, retrieval candidates, selected context, generated answer, evidence,
-evaluation signals, and failure diagnosis.
+[Project page](https://gioiazheng.github.io/projects/rag-observatory/) ·
+[Reproduce a small run](docs/reproduce_small.md) ·
+[Trace contract](docs/trace_stage_contract.md) ·
+[Evaluator protocol](docs/evaluator_protocol.md)
 
-## Current Scope
+`rag-observatory` helps answer a question that aggregate RAG metrics cannot:
+**why did this run fail?** It turns execution traces into inspectable diagnostic
+artifacts covering retrieval, reranking, context selection, generation,
+evidence use, evaluation signals, and failure labels.
 
-The first milestone implements the smallest credible observability loop:
+The project is a diagnostic layer around RAG experiments—not another pipeline,
+chatbot, or framework wrapper.
 
-1. Load a trace from JSON.
-2. Validate the trace schema.
-3. Apply manual and simple heuristic failure labels.
-4. Render a compact markdown diagnostic report.
-5. Test schema validation, taxonomy stability, report generation, and CLI output.
+## What it provides
+
+| Capability | Output |
+| --- | --- |
+| Trace validation | Versioned, inspectable records of queries, retrieved documents, selected context, answers, metrics, and provenance |
+| Failure diagnosis | Manual and heuristic labels spanning retrieval, evidence use, and generation errors |
+| Evidence inspection | Claim-level support and attribution views |
+| Run comparison | Before/after trace comparisons and failure-pattern summaries |
+| Reporting | Portable Markdown and HTML reports with SVG previews |
+| Evaluation | Reviewed-label and RAG quality-dimension checks |
+| Integration | A narrow `msmarco-genqa` adapter and OpenTelemetry-aligned internal fields |
+| Reproducibility | Manifests, public-safe fixtures, CI, Docker, and a one-command small workflow |
+
+## A concrete diagnosis
+
+A checked-in synthetic trace retrieves the correct evidence—“Vitamin C prevents
+scurvy”—but the generator answers “Vitamin D prevents scurvy.” The resulting
+report distinguishes successful retrieval from a generation failure:
+
+| Signal | Diagnosis |
+| --- | --- |
+| Retrieval | Relevant evidence was retrieved and selected |
+| Faithfulness | Failed: the answer contradicts the selected context |
+| Failure modes | `contradicted_by_context`, `unsupported_answer` |
+| Likely source | Generation changed the key entity |
+
+See the complete
+[synthetic diagnostic report](docs/examples/synthetic_diagnostic_report.md).
+The example is intentionally small and public-safe; it demonstrates the trace
+and reporting contract rather than a dataset-scale benchmark result.
 
 ## Quickstart
 
-Run the small end-to-end reproduction workflow:
+Requires Python 3.10 or newer.
+
+```bash
+git clone https://github.com/GioiaZheng/rag-observatory.git
+cd rag-observatory
+python -m pip install -e .
+```
+
+Generate a report from a toy trace:
+
+```bash
+rag-observe report \
+  tests/fixtures/toy_runs/unsupported_answer.json \
+  --output outputs/reports/unsupported_answer.md
+```
+
+Run the end-to-end small reproduction workflow:
 
 ```bash
 make reproduce-small
 ```
 
-If `make` is not available, run the underlying script directly:
+If `make` is unavailable:
 
 ```bash
 python scripts/reproduce_small.py --output-dir outputs/reproduce-small
 ```
 
-This writes a normalized trace, Markdown report, HTML report, benchmark
-comparison, failure-pattern benchmark summary, screenshot preview, and manifest
-under `outputs/reproduce-small/`. The workflow is documented in
-[`docs/reproduce_small.md`](docs/reproduce_small.md).
+The workflow writes a normalized trace, Markdown and HTML diagnostics, an SVG
+preview, run comparisons, a failure-pattern summary, and a manifest under
+`outputs/reproduce-small/`. See
+[Small Reproduction Workflow](docs/reproduce_small.md) for the artifact tree and
+input fixtures.
 
-Run the tests:
+## CLI workflows
+
+After installation, the main commands are:
 
 ```bash
-python -m unittest discover -s tests
+# Render Markdown or HTML diagnostics
+rag-observe report TRACE.json --output report.md
+rag-observe html-report TRACE.json --output report.html --screenshot report.svg
+
+# Compare two runs for the same query
+rag-observe compare BEFORE.json AFTER.json --output comparison.md
+
+# Summarize a small set of pipeline variants
+rag-observe benchmark-summary VARIANTS.json --output benchmark.md
+
+# Inspect multi-turn behavior
+rag-observe conversation-report TURN_1.json TURN_2.json --output conversation.md
+
+# Convert a public-safe msmarco-genqa export
+rag-observe ingest-msmarco-genqa EXPORT.json --output trace.json
+
+# Check reviewed failure labels and quality dimensions
+rag-observe evaluate-labels EXPECTED_LABELS.json --output labels.md
+rag-observe evaluate-quality EXPECTED_SCORES.json --output quality.md
 ```
 
-Install the development tools and run the repository quality gates:
+Use `python -m rag_observatory.cli.main ...` with `PYTHONPATH=src` when
+working from a source checkout without installation.
+
+## Trace and diagnosis model
+
+The central object is a RAG execution trace:
+
+```text
+query
+  → retrieval candidates
+  → reranked / selected context
+  → generated answer
+  → claims and evidence
+  → evaluation signals
+  → failure diagnosis
+```
+
+The stage-level contract preserves enough information to separate failures that
+look identical in a single score. For example, a wrong answer may come from
+missing evidence, poor context selection, ignored evidence, or an unsupported
+generation. Configuration and provenance fields make those diagnoses
+comparable across runs.
+
+## Evidence and reproducibility
+
+The repository currently provides:
+
+- public-safe synthetic traces and reviewed expected outputs;
+- a one-command small workflow exercised in CI;
+- trace comparison and failure-pattern examples;
+- Ruff, formatting, strict mypy, unit-test, Docker, and CLI smoke-test gates;
+- streaming JSONL guidance and a synthetic trace-I/O smoke benchmark;
+- optional DVC-oriented artifact versioning guidance.
+
+Research claims remain evidence-gated. Generated experiment outputs are kept
+outside the committed tree by default, while small fixtures and report examples
+remain reviewable in Git.
+
+## Documentation
+
+| Topic | Document |
+| --- | --- |
+| Small reproducible workflow | [docs/reproduce_small.md](docs/reproduce_small.md) |
+| Stage-level trace contract | [docs/trace_stage_contract.md](docs/trace_stage_contract.md) |
+| Evaluator protocol | [docs/evaluator_protocol.md](docs/evaluator_protocol.md) |
+| Claim-level diagnosis | [docs/claim_level_diagnosis.md](docs/claim_level_diagnosis.md) |
+| OpenTelemetry alignment | [docs/opentelemetry_alignment.md](docs/opentelemetry_alignment.md) |
+| Report artifacts | [docs/report_artifacts.md](docs/report_artifacts.md) |
+| Benchmark comparison | [docs/benchmark_comparison.md](docs/benchmark_comparison.md) |
+| Configuration sensitivity | [docs/config_sensitivity.md](docs/config_sensitivity.md) |
+| Streaming trace storage | [docs/streaming_trace_storage.md](docs/streaming_trace_storage.md) |
+| Artifact versioning | [docs/artifact_versioning.md](docs/artifact_versioning.md) |
+| Container workflow | [docs/container.md](docs/container.md) |
+| Research evidence plan | [docs/research_evidence_plan.md](docs/research_evidence_plan.md) |
+
+## Repository layout
+
+```text
+src/rag_observatory/
+  trace/          trace schema and validation
+  taxonomy/       failure labels and heuristic classification
+  reports/        Markdown and HTML diagnostics
+  io/             trace loading, saving, and collections
+  cli/            command-line entry points
+
+tests/            tests and small synthetic fixtures
+examples/         public-safe reproduction inputs
+docs/             contracts, protocols, examples, and design notes
+configs/          configuration templates
+failure_taxonomy/ versioned taxonomy seeds
+```
+
+## Project boundaries and status
+
+The core trace-validation, reporting, comparison, and evaluator-protocol loop is
+implemented and tested. Interfaces are still early and may evolve while the
+project adds broader reviewed trace coverage.
+
+Current boundaries:
+
+- checked-in evidence is small and synthetic, not a leaderboard or
+  dataset-scale benchmark;
+- heuristic labels support inspection but are not a learned failure classifier;
+- the toolkit is not yet a production telemetry backend or hosted dashboard;
+- pipeline code belongs here only as a fixture, minimal demo, or narrow adapter.
+
+See the
+[msmarco-genqa adapter plan](docs/msmarco_genqa_adapter_plan.md) and
+[lightweight classifier plan](docs/lightweight_failure_classifier_plan.md) for
+the intentionally narrow integration and modeling boundaries.
+
+## Development
 
 ```bash
 python -m pip install -e ".[dev]"
 ruff check .
 ruff format --check .
 mypy src
+python -m unittest discover -s tests
 pre-commit run --all-files
 ```
-
-Render a diagnostic report from a toy trace:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main report tests/fixtures/toy_runs/unsupported_answer.json --output outputs/reports/unsupported_answer.md
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m rag_observatory.cli.main report tests/fixtures/toy_runs/unsupported_answer.json --output outputs/reports/unsupported_answer.md
-```
-
-After installation, the same command is available as:
-
-```bash
-rag-observe report tests/fixtures/toy_runs/unsupported_answer.json --output outputs/reports/unsupported_answer.md
-```
-
-Render an HTML diagnostic report and SVG preview:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main html-report tests/fixtures/stage_contract/full_observability_trace.json --output outputs/reports/full_observability.html --screenshot outputs/reports/full_observability.svg
-```
-
-Compare two traces for the same query:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m rag_observatory.cli.main compare tests/fixtures/toy_runs/comparison_before.json tests/fixtures/toy_runs/comparison_after.json --output outputs/reports/comparison.md
-```
-
-Render a small failure-pattern benchmark summary:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main benchmark-summary examples/reproduce-small/benchmark_variants.json --output outputs/reports/failure_pattern_benchmark.md
-```
-
-Render a conversational report from per-turn traces:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main conversation-report tests/fixtures/conversations/turn_001_supported.json tests/fixtures/conversations/turn_002_bad_rewrite.json tests/fixtures/conversations/turn_003_unanswerable.json --output outputs/reports/conversation.md
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m rag_observatory.cli.main conversation-report tests/fixtures/conversations/turn_001_supported.json tests/fixtures/conversations/turn_002_bad_rewrite.json tests/fixtures/conversations/turn_003_unanswerable.json --output outputs/reports/conversation.md
-```
-
-Convert a synthetic `msmarco-genqa` export into a RAG trace:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main ingest-msmarco-genqa tests/fixtures/msmarco_genqa/synthetic_export.json --output outputs/traces/msmarco_genqa_trace.json
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m rag_observatory.cli.main ingest-msmarco-genqa tests/fixtures/msmarco_genqa/synthetic_export.json --output outputs/traces/msmarco_genqa_trace.json
-```
-
-Evaluate failure labels against reviewed expected labels:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main evaluate-labels tests/fixtures/reviewed_labels/expected_failure_labels.json --output outputs/reports/failure_label_evaluation.md
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m rag_observatory.cli.main evaluate-labels tests/fixtures/reviewed_labels/expected_failure_labels.json --output outputs/reports/failure_label_evaluation.md
-```
-
-Evaluate core RAG quality dimensions against reviewed expected scores:
-
-```bash
-PYTHONPATH=src python -m rag_observatory.cli.main evaluate-quality tests/fixtures/quality_evaluation/expected_quality_scores.json --output outputs/reports/quality_evaluation.md
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:PYTHONPATH = "src"
-python -m rag_observatory.cli.main evaluate-quality tests/fixtures/quality_evaluation/expected_quality_scores.json --output outputs/reports/quality_evaluation.md
-```
-
-The evaluator protocol for context relevance, faithfulness, answer relevance,
-provenance, and abstention is documented in
-[`docs/evaluator_protocol.md`](docs/evaluator_protocol.md).
-
-The stage-level trace contract for retrieval, reranking, prompt construction,
-generation, and evaluation is documented in
-[`docs/trace_stage_contract.md`](docs/trace_stage_contract.md).
-
-The OpenTelemetry-aligned internal run model is documented in
-[`docs/opentelemetry_alignment.md`](docs/opentelemetry_alignment.md).
-
-Claim-level answer support and attribution diagnosis is documented in
-[`docs/claim_level_diagnosis.md`](docs/claim_level_diagnosis.md).
-
-A public-safe synthetic example of the rendered report shape is checked in at
-[`docs/examples/synthetic_diagnostic_report.md`](docs/examples/synthetic_diagnostic_report.md).
-Generated run outputs should still be written outside the committed tree, such
-as under an ignored `outputs/` directory.
-
-HTML report artifacts and screenshot previews are documented in
-[`docs/report_artifacts.md`](docs/report_artifacts.md).
-
-Small failure-pattern benchmark comparisons are documented in
-[`docs/benchmark_comparison.md`](docs/benchmark_comparison.md).
-
-Configuration-sensitive failure diagnosis is documented in
-[`docs/config_sensitivity.md`](docs/config_sensitivity.md).
-
-For dataset-scale trace parsing, keep individual traces inspectable and use the
-streaming JSONL collection format documented in
-[`docs/streaming_trace_storage.md`](docs/streaming_trace_storage.md). A
-synthetic throughput and peak-memory smoke test is available with:
-
-```bash
-python scripts/benchmark_trace_io.py --sizes 1000 10000 50000 --output outputs/benchmarks/trace-io
-```
-
-Large experiment artifacts are managed outside Git by default. Optional DVC
-metadata and workflows are documented in
-[`docs/artifact_versioning.md`](docs/artifact_versioning.md).
-
-Container build and smoke-test commands are documented in
-[`docs/container.md`](docs/container.md).
-
-## Project Boundaries
-
-This repository focuses on:
-
-- trace schemas
-- failure taxonomy
-- evidence attribution
-- diagnostic reports
-- reproducible run artifacts
-
-It does not aim to provide:
-
-- another RAG pipeline
-- a chatbot
-- a dashboard-first application
-- a generic framework wrapper
-
-Pipeline code should appear only as a fixture, a minimal demo, or an adapter
-for observing external systems.
-
-Adapter planning should stay explicit and narrow. The current `msmarco-genqa`
-boundary note is in
-[`docs/msmarco_genqa_adapter_plan.md`](docs/msmarco_genqa_adapter_plan.md).
-
-Modeling investigations should stay optional and evidence-gated. The current
-lightweight classifier note is in
-[`docs/lightweight_failure_classifier_plan.md`](docs/lightweight_failure_classifier_plan.md).
-
-Research claims should stay tied to explicit evidence requirements. The current
-system-demonstration evidence agenda is in
-[`docs/research_evidence_plan.md`](docs/research_evidence_plan.md).
-
-## Repository Layout
-
-```text
-src/rag_observatory/
-  trace/          Trace schema and validation
-  taxonomy/       Failure labels and heuristic classification
-  reports/        Markdown diagnostic reports
-  io/             JSON trace loading and saving
-  cli/            Command line entry points
-
-tests/
-  fixtures/       Small synthetic traces
-
-docs/             Design notes and public technical documentation
-configs/          Configuration templates
-failure_taxonomy/ Paper-oriented taxonomy seeds
-```
-
-## Status
-
-The project is in its initial schema and reporting milestone. Interfaces should
-be treated as early but intentionally small.
 
 ## License
 
