@@ -26,6 +26,7 @@ data/cache/
 data/processed/*
 !data/processed/*.dvc
 *.jsonl
+!examples/evals-as-code/**/*.jsonl
 
 .ipynb_checkpoints/
 *.sqlite

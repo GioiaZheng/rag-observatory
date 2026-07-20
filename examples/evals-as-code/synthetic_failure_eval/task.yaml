@@ -1,0 +1,12 @@
+task_id: synthetic_failure_eval_v1
+description: Synthetic evals-as-code fixture for trace-based RAG failure diagnosis.
+dataset_path: dataset.jsonl
+default_output_dir: ../../../outputs/evals-as-code/synthetic_failure_eval
+checked_report_path: report.md
+results_filename: results.json
+report_filename: report.md
+threshold: 0.8
+dimensions:
+  - context_relevance
+  - faithfulness
+  - answer_relevance
