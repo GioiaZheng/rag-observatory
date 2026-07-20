@@ -160,6 +160,7 @@ remain reviewable in Git.
 | Small reproducible workflow | [docs/reproduce_small.md](docs/reproduce_small.md) |
 | Stage-level trace contract | [docs/trace_stage_contract.md](docs/trace_stage_contract.md) |
 | Evaluator protocol | [docs/evaluator_protocol.md](docs/evaluator_protocol.md) |
+| Evals-as-code workflow | [docs/evals_as_code.md](docs/evals_as_code.md) |
 | Claim-level diagnosis | [docs/claim_level_diagnosis.md](docs/claim_level_diagnosis.md) |
 | OpenTelemetry alignment | [docs/opentelemetry_alignment.md](docs/opentelemetry_alignment.md) |
 | OTLP + OpenInference ingestion | [docs/otlp_openinference_ingestion.md](docs/otlp_openinference_ingestion.md) |
@@ -223,4 +224,3 @@ pre-commit run --all-files
 ## License
 
 MIT License. See [LICENSE](LICENSE).
-
