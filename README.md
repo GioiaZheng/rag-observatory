@@ -161,6 +161,7 @@ remain reviewable in Git.
 | Stage-level trace contract | [docs/trace_stage_contract.md](docs/trace_stage_contract.md) |
 | Evaluator protocol | [docs/evaluator_protocol.md](docs/evaluator_protocol.md) |
 | Evals-as-code workflow | [docs/evals_as_code.md](docs/evals_as_code.md) |
+| Module boundaries | [docs/module_boundaries.md](docs/module_boundaries.md) |
 | Claim-level diagnosis | [docs/claim_level_diagnosis.md](docs/claim_level_diagnosis.md) |
 | OpenTelemetry alignment | [docs/opentelemetry_alignment.md](docs/opentelemetry_alignment.md) |
 | OTLP + OpenInference ingestion | [docs/otlp_openinference_ingestion.md](docs/otlp_openinference_ingestion.md) |
