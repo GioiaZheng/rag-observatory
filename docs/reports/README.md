@@ -6,6 +6,12 @@ Prefer one short file per experiment or milestone:
 
 - `YYYY-MM-DD-topic.md`
 
+## Current Reports
+
+- [`2026-07-01-trace-based-rag-failure-analysis.md`](2026-07-01-trace-based-rag-failure-analysis.md)
+  drafts the current technical-report narrative for trace-based RAG failure
+  analysis.
+
 ## Template
 
 ### Question

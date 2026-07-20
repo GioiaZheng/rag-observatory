@@ -170,6 +170,7 @@ remain reviewable in Git.
 | Artifact versioning | [docs/artifact_versioning.md](docs/artifact_versioning.md) |
 | Container workflow | [docs/container.md](docs/container.md) |
 | Research evidence plan | [docs/research_evidence_plan.md](docs/research_evidence_plan.md) |
+| Technical report draft | [docs/reports/2026-07-01-trace-based-rag-failure-analysis.md](docs/reports/2026-07-01-trace-based-rag-failure-analysis.md) |
 
 ## Repository layout
 
