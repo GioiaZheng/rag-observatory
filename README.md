@@ -7,6 +7,8 @@
 **Trace-based observability and failure analysis for Retrieval-Augmented Generation.**
 
 [Project page](https://gioiazheng.github.io/projects/rag-observatory/) ·
+[Live Space](https://huggingface.co/spaces/GioiaZheng/rag-observatory) ·
+[Toy trace dataset](https://huggingface.co/datasets/GioiaZheng/rag-observatory-toy-traces) ·
 [Reproduce a small run](docs/reproduce_small.md) ·
 [Trace contract](docs/trace_stage_contract.md) ·
 [Evaluator protocol](docs/evaluator_protocol.md)
