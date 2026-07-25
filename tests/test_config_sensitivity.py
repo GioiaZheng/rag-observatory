@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests" / "fixtures" / "config_sensitivity" / "retrieval_depth_variants.json"
 DOC = ROOT / "docs" / "config_sensitivity.md"
+ACTUAL_REPORT = ROOT / "docs" / "reports" / "2026-07-25-scifact-retrieval-depth.md"
 
 
 class ConfigurationSensitivityTests(unittest.TestCase):
@@ -38,6 +39,15 @@ class ConfigurationSensitivityTests(unittest.TestCase):
         self.assertIn("tests/fixtures/config_sensitivity/retrieval_depth_variants.json", doc)
         self.assertIn("retrieval_top_k", doc)
         self.assertIn("RAG failure is often configuration-sensitive", doc)
+
+    def test_actual_report_records_provenance_and_scope(self) -> None:
+        report = ACTUAL_REPORT.read_text(encoding="utf-8")
+
+        self.assertIn("BEIR SciFact", report)
+        self.assertIn("5f7d1de60b170fc8027bb7898e2efca1", report)
+        self.assertIn("Trace records:** 40", report)
+        self.assertIn("not a full generative RAG benchmark", report)
+        self.assertIn("largest observed failure-rate change is localized to `retrieval`", report)
 
 
 if __name__ == "__main__":

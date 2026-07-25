@@ -154,6 +154,29 @@ diagnostic note instead of inventing context selection. See
 [OTLP + OpenInference Ingestion](otlp_openinference_ingestion.md) for the exact
 mapping and boundaries.
 
+## Implemented Public Trace Conversion
+
+The `run-report` command now executes the mapping described above:
+
+```bash
+rag-observe run-report TRACE.json \
+  --run-output outputs/internal-run.json \
+  --output outputs/stage-report.md
+```
+
+`internal_run_from_trace` converts every public `RagTrace` into the ordered
+query, retrieval, reranking, context, prompt, generation, evaluation, and
+diagnostics spans. Optional unobserved stages remain explicit with `unset`
+status. Large query, document, prompt, answer, claim, and review payloads stay
+inside span input/output fields, while run and span attributes contain only
+grouping metadata.
+
+The stage-aware Markdown report consumes the converted spans rather than
+reclassifying a flat trace. Failure signals are emitted as events on the
+responsible stage, and the diagnostics span links back to those source spans.
+Unknown or explicitly unlocalized labels remain on diagnostics instead of
+being assigned to a stage without evidence.
+
 ## Checked Fixtures
 
 The synthetic fixture
@@ -180,10 +203,9 @@ generation.
 
 1. Keep the current trace schema as the stable reporting and diagnosis model.
 2. Maintain the tested OTLP/JSON + OpenInference offline import boundary.
-3. Add explicit context-selection conventions before mapping selected context.
-4. Teach reports and comparisons to retain stage-span provenance where useful.
-5. Add CI quality-gate examples over imported, reviewed traces.
-6. Consider a hardened OTLP/HTTP receiver only after persistence, admission
+3. Keep extending explicit context-selection conventions for imported formats.
+4. Add CI quality-gate examples over imported, reviewed traces.
+5. Consider a hardened OTLP/HTTP receiver only after persistence, admission
    control, redaction, backpressure, and operational ownership are defined.
 
 The SDK/exporter step is intentionally last. The project should first own its

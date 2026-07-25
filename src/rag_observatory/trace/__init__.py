@@ -1,3 +1,10 @@
+from rag_observatory.trace.run import (
+    InternalRun,
+    SpanLink,
+    StageEvent,
+    StageSpan,
+    internal_run_from_trace,
+)
 from rag_observatory.trace.schema import (
     Answer,
     Citation,
@@ -27,11 +34,16 @@ __all__ = [
     "DiagnosticNote",
     "Document",
     "FailureLabel",
+    "InternalRun",
     "Metric",
     "Prompt",
     "Query",
     "RagTrace",
     "RunMetadata",
+    "SpanLink",
+    "StageEvent",
+    "StageSpan",
     "TraceValidationError",
+    "internal_run_from_trace",
     "validate_trace",
 ]
