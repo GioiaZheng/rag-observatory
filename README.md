@@ -100,6 +100,14 @@ rag-observe html-report TRACE.json --output report.html --screenshot report.svg
 # Compare two runs for the same query
 rag-observe compare BEFORE.json AFTER.json --output comparison.md
 
+# Convert a trace to stage spans and render stage-aware failure attribution
+rag-observe run-report TRACE.json --run-output run.json --output run-report.md
+
+# Compare exported traces while changing one recorded configuration field
+rag-observe config-report RUNS/*.json \
+  --controlled-variable retrieval_top_k \
+  --output config-report.md
+
 # Summarize a small set of pipeline variants
 rag-observe benchmark-summary VARIANTS.json --output benchmark.md
 
@@ -170,6 +178,7 @@ remain reviewable in Git.
 | Report artifacts | [docs/report_artifacts.md](docs/report_artifacts.md) |
 | Benchmark comparison | [docs/benchmark_comparison.md](docs/benchmark_comparison.md) |
 | Configuration sensitivity | [docs/config_sensitivity.md](docs/config_sensitivity.md) |
+| Actual SciFact retrieval-depth run | [docs/reports/2026-07-25-scifact-retrieval-depth.md](docs/reports/2026-07-25-scifact-retrieval-depth.md) |
 | Streaming trace storage | [docs/streaming_trace_storage.md](docs/streaming_trace_storage.md) |
 | Artifact versioning | [docs/artifact_versioning.md](docs/artifact_versioning.md) |
 | Container workflow | [docs/container.md](docs/container.md) |

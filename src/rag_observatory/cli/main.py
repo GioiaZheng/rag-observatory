@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 from rag_observatory.adapters.msmarco_genqa import load_msmarco_genqa_trace
@@ -11,6 +12,7 @@ from rag_observatory.evaluation.quality import evaluate_rule_based_quality
 from rag_observatory.io.json import dump_trace, load_trace
 from rag_observatory.reports.benchmark import render_markdown_failure_pattern_benchmark
 from rag_observatory.reports.comparison import render_markdown_comparison
+from rag_observatory.reports.configuration import render_markdown_configuration_report
 from rag_observatory.reports.conversation import render_markdown_conversation_report
 from rag_observatory.reports.failure_label_evaluation import (
     render_markdown_failure_label_evaluation,
@@ -18,7 +20,9 @@ from rag_observatory.reports.failure_label_evaluation import (
 from rag_observatory.reports.html import render_html_report, render_report_screenshot_svg
 from rag_observatory.reports.markdown import render_markdown_report
 from rag_observatory.reports.quality import render_markdown_quality_evaluation
+from rag_observatory.reports.run import render_markdown_run_report
 from rag_observatory.taxonomy.failure_modes import classify_trace
+from rag_observatory.trace.run import internal_run_from_trace
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -43,6 +47,33 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("before", help="Path to the baseline RAG trace JSON file.")
     compare.add_argument("after", help="Path to the comparison RAG trace JSON file.")
     compare.add_argument(
+        "--output", "-o", help="Output markdown file. Prints to stdout if omitted."
+    )
+
+    run_report = subparsers.add_parser(
+        "run-report",
+        help="Convert a public trace to stage spans and render a stage-aware report.",
+    )
+    run_report.add_argument("trace", help="Path to a RAG trace JSON file.")
+    run_report.add_argument(
+        "--output", "-o", help="Output markdown file. Prints to stdout if omitted."
+    )
+    run_report.add_argument(
+        "--run-output",
+        help="Optional output JSON file for the converted internal run.",
+    )
+
+    config_report = subparsers.add_parser(
+        "config-report",
+        help="Compare exported traces across one controlled configuration variable.",
+    )
+    config_report.add_argument("traces", nargs="+", help="Paths to RAG trace JSON files.")
+    config_report.add_argument(
+        "--controlled-variable",
+        required=True,
+        help="Key under metadata.extra.configuration that differs between runs.",
+    )
+    config_report.add_argument(
         "--output", "-o", help="Output markdown file. Prints to stdout if omitted."
     )
 
@@ -150,6 +181,27 @@ def main(argv: list[str] | None = None) -> int:
         after = load_trace(args.after)
         comparison = render_markdown_comparison(before, after)
         _write_or_print(comparison, args.output)
+        return 0
+
+    if args.command == "run-report":
+        trace = load_trace(args.trace)
+        run = internal_run_from_trace(trace)
+        report = render_markdown_run_report(run)
+        _write_or_print(report, args.output)
+        if args.run_output:
+            _write_or_print(
+                json.dumps(run.to_dict(), indent=2, sort_keys=True) + "\n",
+                args.run_output,
+            )
+        return 0
+
+    if args.command == "config-report":
+        traces = [load_trace(trace_path) for trace_path in args.traces]
+        report = render_markdown_configuration_report(
+            traces,
+            controlled_variable=args.controlled_variable,
+        )
+        _write_or_print(report, args.output)
         return 0
 
     if args.command == "benchmark-summary":

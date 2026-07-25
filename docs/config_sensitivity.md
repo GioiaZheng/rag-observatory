@@ -69,6 +69,46 @@ This is a diagnostic fixture, not a benchmark claim. It demonstrates the shape
 of a configuration-sensitive comparison while keeping the query, generator, and
 evaluator fixed.
 
+## Executable Comparison Path
+
+`config-report` consumes ordinary exported trace JSON files. Each trace records
+its configuration under `metadata.extra.configuration`. The command rejects a
+comparison unless every configuration contains the same query IDs and every
+recorded configuration field except the named controlled variable is identical:
+
+```bash
+rag-observe config-report outputs/runs/*.json \
+  --controlled-variable retrieval_top_k \
+  --output outputs/configuration-report.md
+```
+
+The generated report counts failure signals by configuration, maps each signal
+to its stage, shows per-query changes, and reports the largest observed
+stage-level rate spread. It uses association language deliberately; trace
+differences alone do not prove a causal effect outside the controlled runs.
+
+## Actual SciFact Smoke Run
+
+[`docs/reports/2026-07-25-scifact-retrieval-depth.md`](reports/2026-07-25-scifact-retrieval-depth.md)
+is generated from 40 actual retrieval traces: 20 fixed BEIR SciFact test queries
+under deterministic BM25 with `retrieval_top_k=1` and `retrieval_top_k=5`.
+The public dataset, query IDs, license, archive checksum, invariant settings,
+exact counts, and limitations are recorded in the report.
+
+Reproduce it after obtaining the BEIR SciFact archive:
+
+```bash
+python scripts/run_scifact_config_sensitivity.py PATH/TO/scifact \
+  --query-count 20 \
+  --top-k 1 5 \
+  --output-dir outputs/scifact-config-sensitivity \
+  --report-output docs/reports/2026-07-25-scifact-retrieval-depth.md
+```
+
+This is real exported pipeline data, but the scope is intentionally narrow. It
+tests retrieval-depth sensitivity with a deterministic extractive answer; it is
+not presented as a full generative RAG benchmark or a dataset-wide result.
+
 ## Boundary
 
 `msmarco-genqa` can own the pipeline variants:
