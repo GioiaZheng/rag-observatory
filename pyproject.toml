@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,9 +9,27 @@ description = "Trace-based observability and error analysis for Retrieval-Augmen
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Gioia Zheng", email = "gioia.zheng.stud@gmail.com" }]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["rag", "observability", "evaluation", "failure-analysis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Testing",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/GioiaZheng/rag-observatory"
+Repository = "https://github.com/GioiaZheng/rag-observatory"
+Issues = "https://github.com/GioiaZheng/rag-observatory/issues"
+Changelog = "https://github.com/GioiaZheng/rag-observatory/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [
