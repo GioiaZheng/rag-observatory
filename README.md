@@ -1,7 +1,7 @@
 # rag-observatory
 
 [![tests](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml/badge.svg)](https://github.com/GioiaZheng/rag-observatory/actions/workflows/tests.yml)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-blue.svg)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
 **Trace-based observability and failure analysis for Retrieval-Augmented Generation.**
@@ -232,6 +232,11 @@ mypy src
 python -m unittest discover -s tests
 pre-commit run --all-files
 ```
+
+CI runs the full test suite on CPython 3.10 through 3.14 on Linux and checks
+the oldest and newest supported versions on Windows. The small reproduction
+workflow runs in each compatibility job so the support claim covers executable
+artifacts, not only imports.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for project scope, fixture and evidence
 rules, packaging checks, and pull request expectations. Report suspected

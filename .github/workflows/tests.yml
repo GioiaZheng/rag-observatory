@@ -36,6 +36,44 @@ jobs:
       - name: Run small reproduction workflow
         run: make reproduce-small
 
+  compatibility:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: "3.11"
+          - os: ubuntu-latest
+            python-version: "3.12"
+          - os: ubuntu-latest
+            python-version: "3.13"
+          - os: ubuntu-latest
+            python-version: "3.14"
+          - os: windows-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.14"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: python -m pip install --disable-pip-version-check --no-cache-dir -e .
+
+      - name: Run tests
+        run: python -m unittest discover -s tests
+
+      - name: Run cross-platform reproduction workflow
+        run: python scripts/reproduce_small.py --output-dir outputs/reproduce-small
+
   docker:
     runs-on: ubuntu-latest
 
