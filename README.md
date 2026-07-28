@@ -233,6 +233,10 @@ python -m unittest discover -s tests
 pre-commit run --all-files
 ```
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for project scope, fixture and evidence
+rules, packaging checks, and pull request expectations. Report suspected
+vulnerabilities through [SECURITY.md](SECURITY.md), not a public issue.
+
 ## License
 
 MIT License. See [LICENSE](LICENSE).

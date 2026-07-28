@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a reproducible problem in the CLI, trace model, adapters, or reports.
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include credentials, proprietary data, or private traces.
+        Use the security policy instead if public disclosure could cause harm.
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem
+      description: What happened, and which command or component was involved?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide the shortest public-safe example that reproduces the problem.
+      placeholder: |
+        1. Install ...
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include a sanitized traceback or report excerpt when useful.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: main at abc1234
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Python 3.12, Windows 11
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Data and scope check
+      options:
+        - label: I removed credentials, personal data, and proprietary trace content.
+          required: true
+        - label: I searched existing issues and pull requests for the same problem.
+          required: true

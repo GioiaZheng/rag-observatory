@@ -70,8 +70,10 @@ def verify(dist_dir: Path) -> tuple[Path, Path]:
         sdist_members,
         {
             "CHANGELOG.md",
+            "CONTRIBUTING.md",
             "LICENSE",
             "README.md",
+            "SECURITY.md",
             "pyproject.toml",
             "tests/test_cli_report.py",
             "tests/fixtures/toy_runs/unsupported_answer.json",
