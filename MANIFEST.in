@@ -1,6 +1,8 @@
 include CHANGELOG.md
+include CONTRIBUTING.md
 include LICENSE
 include README.md
+include SECURITY.md
 include pyproject.toml
 recursive-include configs *.yaml
 recursive-include docs *.md

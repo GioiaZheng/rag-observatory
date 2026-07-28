@@ -11,6 +11,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Distribution verification in CI, including wheel installation and source
   distribution content checks.
+- Contributor setup, evidence rules, private vulnerability reporting guidance,
+  and structured bug and feature-proposal forms.
 
 ## [0.1.0] - Unreleased
 
