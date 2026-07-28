@@ -55,3 +55,38 @@ jobs:
           rag-observe report
           tests/fixtures/toy_runs/unsupported_answer.json
           --output /tmp/unsupported_answer.md
+
+  distribution:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+
+      - name: Install release tooling
+        run: >
+          python -m pip install
+          --disable-pip-version-check
+          --no-cache-dir
+          build==1.3.0
+          twine==6.2.0
+
+      - name: Build wheel and source distribution
+        run: python -m build
+
+      - name: Check package metadata and long description
+        run: python -m twine check --strict dist/*
+
+      - name: Verify distribution contents
+        run: python scripts/verify_distribution.py dist
+
+      - name: Install the wheel
+        run: python -m pip install --no-deps --force-reinstall dist/*.whl
+
+      - name: Run installed CLI smoke test
+        run: rag-observe --help
