@@ -222,6 +222,13 @@ See the
 [lightweight classifier plan](docs/lightweight_failure_classifier_plan.md) for
 the intentionally narrow integration and modeling boundaries.
 
+## Citation
+
+Machine-readable software citation metadata is available in
+[CITATION.cff](CITATION.cff). The project does not currently have a DOI or a
+versioned public release. For exact reproducibility, also record the Git commit
+used for an experiment.
+
 ## Development
 
 ```bash

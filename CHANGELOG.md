@@ -13,6 +13,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   distribution content checks.
 - Contributor setup, evidence rules, private vulnerability reporting guidance,
   and structured bug and feature-proposal forms.
+- Machine-readable software citation metadata with an ORCID-linked author
+  record and an explicit no-DOI boundary.
 
 ## [0.1.0] - Unreleased
 
