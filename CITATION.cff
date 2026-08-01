@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: >-
+  If you use rag-observatory in research or software, please cite the software
+  using these metadata.
+title: rag-observatory
+type: software
+authors:
+  - family-names: Zheng
+    given-names: Gioia
+    orcid: https://orcid.org/0009-0000-8212-4506
+abstract: >-
+  Trace-based observability and failure analysis for Retrieval-Augmented
+  Generation runs.
+repository-code: https://github.com/GioiaZheng/rag-observatory
+url: https://github.com/GioiaZheng/rag-observatory
+license: MIT
+keywords:
+  - retrieval-augmented generation
+  - RAG observability
+  - evaluation
+  - failure analysis
