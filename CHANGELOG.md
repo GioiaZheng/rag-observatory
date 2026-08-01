@@ -15,6 +15,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   and structured bug and feature-proposal forms.
 - Machine-readable software citation metadata with an ORCID-linked author
   record and an explicit no-DOI boundary.
+- Automated compatibility checks for CPython 3.10 through 3.14 on Linux and
+  boundary-version checks on Windows.
 
 ## [0.1.0] - Unreleased
 
