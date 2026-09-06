@@ -40,7 +40,7 @@ Changelog = "https://github.com/GioiaZheng/rag-observatory/blob/main/CHANGELOG.m
 dev = [
     "mypy==2.3.1",
     "pre-commit==4.6.2",
-    "ruff==0.16.4",
+    "ruff==0.16.5",
 ]
 
 [project.scripts]
