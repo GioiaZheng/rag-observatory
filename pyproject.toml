@@ -38,9 +38,9 @@ Changelog = "https://github.com/GioiaZheng/rag-observatory/blob/main/CHANGELOG.m
 
 [project.optional-dependencies]
 dev = [
-    "mypy==2.4.0",
+    "mypy==2.4.1",
     "pre-commit==4.6.2",
-    "ruff==0.16.10",
+    "ruff==0.17.6",
 ]
 
 [project.scripts]
